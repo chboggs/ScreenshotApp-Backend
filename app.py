@@ -27,11 +27,18 @@ def hello():
 @app.route('/new-image', methods=['POST'])
 def new_image():
 	content = request.form
+	subject = "New Image!"
+	recipients = ["ar6screenshot@gmail.com"]
+	if "subject" in content:
+		subject = content["subject"]
+	if "recipient" in content:
+		recipients.append(content["recipient"])
 	new_im = request.files['image']
-	print(new_im)
 	file_name = new_im.filename
-	msg = Message("New Image!", sender="ar6screenshot@gmail.com", recipients=["ar6screenshot@gmail.com"])
+	msg = Message(subject, sender="ar6screenshot@gmail.com", recipients=recipients)
 	msg.attach(file_name, new_im.content_type, new_im.stream.read())
+	if "body" in content:
+		msg.body = content["body"]
 
 	mail.send(msg)
 	return 'Success', 200
