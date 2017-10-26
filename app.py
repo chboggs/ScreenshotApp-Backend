@@ -22,7 +22,7 @@ def health():
 
 @app.route('/')
 def hello():
-	return render_template("index.html")
+	return render_template("index.html",)
 
 @app.route('/new-image', methods=['POST'])
 def new_image():
