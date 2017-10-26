@@ -22,7 +22,7 @@ def health():
 
 @app.route('/')
 def hello():
-	return "Welcome to AR-6's screenshot app!"
+	return render_template("index.html")
 
 @app.route('/new-image', methods=['POST'])
 def new_image():
