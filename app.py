@@ -1,6 +1,6 @@
 # // ./app.py
 
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_mail import Mail, Message
 
 DEBUG = True
@@ -12,7 +12,11 @@ MAIL_USERNAME = 'ar6screenshot@gmail.com'
 MAIL_PASSWORD = 'alexchrischristophcody'
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
+
+# TODO: Register the controllers
+# app.register_blueprint(controllers.<module>, url_prefix='<prefix>')
+
 app.config.from_object(__name__)
 mail = Mail(app)
 
@@ -22,7 +26,7 @@ def health():
 
 @app.route('/')
 def hello():
-	return render_template("index.html",)
+	return render_template('index.html')
 
 @app.route('/new-image', methods=['POST'])
 def new_image():
