@@ -10,7 +10,7 @@ import hashlib
 from datetime import datetime
 from flask import Flask, Response, request, jsonify, current_app
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user, logout_user, current_user , login_required
 from gevent.wsgi import WSGIServer
 
 from .http_codes import Status
@@ -27,41 +27,37 @@ def init():
     """Initialize the application with defaults."""
     db.create_all()
 
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+@app.route('/api/logout', methods=['POST'])
+@login_required
+def logout():
+    logout_user()
+    return jsonify({"msg": "Logout successful"}), Status.HTTP_OK_BASIC
 
 
-# @app.route("/api/logout", methods=['POST'])
-# def logout():
-#     """Logout the currently logged in user."""
-#     # TODO: handle this logout properly, very weird implementation.
-#     identity = get_jwt_identity()
-#     if not identity:
-#         return jsonify({"msg": "Token invalid"}), Status.HTTP_BAD_UNAUTHORIZED
-#     return 'logged out successfully', Status.HTTP_OK_BASIC
+@app.route('/api/login', methods=['POST'])
+def login():
 
+    params = request.get_json()
+    username = params.get('username', None)
+    password = params.get('password', None)
 
-# @app.route('/api/login', methods=['POST'])
-# def login():
-#     """View function for login view."""
+    if not username or not password:
+        return jsonify({"msg": "Missing login parameter"}), Status.HTTP_BAD_REQUEST
 
-#     params = request.get_json()
-#     username = params.get('username', None)
-#     password = params.get('password', None)
+    registered_user = User.query.filter(User.username == username, User.password == password).first()
 
-#     if not username:
-#         return jsonify({"msg": "Missing username parameter"}), Status.HTTP_BAD_REQUEST
-#     if not password:
-#         return jsonify({"msg": "Missing password parameter"}), Status.HTTP_BAD_REQUEST
+    if not registered_user:
+        return jsonify({"msg": "Invalid login"}), Status.HTTP_BAD_REQUEST
 
-#     # TODO Check from DB here
-#     if username != 'admin' or password != 'admin':
-#         return jsonify({"msg": "Bad username or password"}), Status.HTTP_BAD_UNAUTHORIZED
+    login_user(registered_user)
 
-#     # Identity can be any data that is json serializable
-#     # TODO: rather than passing expiry time here explicitly, decode token on client side. But I'm lazy.
-#     ret = {'jwt': create_jwt(identity=username), 'exp': datetime.utcnow() + current_app.config['JWT_EXPIRES']}
-#     return jsonify(ret), 200
+    return jsonify({"msg": "Login successful"}), Status.HTTP_OK_BASIC
 
-@app.route('/api/new-image', methods=['POST'])
+@app.route('/api/new-user', methods=['POST'])
 def new_user():
     params = request.get_json()
     username = params.get('username', None)
