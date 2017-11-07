@@ -1,3 +1,12 @@
-"""Package level init."""
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
-__version__ = '0.0.2'
+db = SQLAlchemy()
+
+def create_app():
+	app = Flask(__name__)
+	app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/app.db'
+
+	db.init_app(app)
+
+	return app
