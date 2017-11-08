@@ -7,6 +7,7 @@ from . import create_app
 import json
 import traceback
 import hashlib
+import os, errno
 from datetime import datetime
 from flask import Flask, Response, request, jsonify, current_app
 from flask_sqlalchemy import SQLAlchemy
@@ -21,11 +22,22 @@ app = create_app()
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+cur_dir = os.getcwd()
+image_dir = os.path.join(cur_dir, 'images')
+
+def create_image_store():
+    try:
+        if not os.path.exists(image_dir):
+            os.makedirs(image_dir)
+    except OSError as e:
+        print(e)
+        create_image_store()
 
 @app.before_first_request
 def init():
     """Initialize the application with defaults."""
     db.create_all()
+
 
 @login_manager.user_loader
 def load_user(id):
@@ -82,8 +94,8 @@ def new_user():
 # @app.route('/api/new-image', methods=['POST'])
 # def new_image():
 
-# @app.route('/api/new-user', methods=['GET'])
-# def get_image_ids():
+# @app.route('/api/get-image', methods=['GET'])
+# def new_image():
 
 
 def main():
@@ -91,6 +103,7 @@ def main():
     try:
         port = 8080
         ip = '0.0.0.0'
+        create_image_store()
         http_server = WSGIServer((ip, port),
                                  app)
         print("Server started at: {0}:{1}".format(ip, port))
