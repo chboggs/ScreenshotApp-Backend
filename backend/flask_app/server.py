@@ -15,7 +15,7 @@ from flask_login import LoginManager, login_user, logout_user, current_user , lo
 from gevent.wsgi import WSGIServer
 
 from .http_codes import Status
-from .models import db, User
+from .models import db, User, Image, Viewable
 
 app = create_app()
 
@@ -91,10 +91,30 @@ def new_user():
 
     return jsonify({"msg": "Successfully created user"}), Status.HTTP_OK_BASIC
 
-# @app.route('/api/new-image', methods=['POST'])
-# def new_image():
+@app.route('/api/new-image', methods=['POST'])
+@login_required
+def new_image():
+    if 'image' not in request.files:
+        return jsonify({"msg": "Missing image"}), Status.HTTP_BAD_REQUEST
+    new_im = request.files['image']
+    name = new_im.filename
+
+    if not name or name == '' or len(name) > 50:
+        return jsonify({"msg": "File must have a valid name"}), Status.HTTP_BAD_REQUEST
+
+    path_to_image = os.path.join(image_dir, name)
+    fw = open(path_to_image, 'wb')
+    fw.write(new_im.read())
+    fw.close()
+
+    db.session.add(Image(
+        name=name, owner=current_user.username, path_to_image=path_to_image
+        ))
+
+    return jsonify({"msg": "Successfully added image"}), Status.HTTP_OK_BASIC
 
 # @app.route('/api/get-image', methods=['GET'])
+# @login_required
 # def new_image():
 
 
