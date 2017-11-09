@@ -36,13 +36,21 @@ class Image(db.Model):
     name = db.Column(db.String(50), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     path_to_image = db.Column(db.String(255), nullable=False)
-    owner = db.Column(db.Integer, nullable=False)
+    owner = db.Column(db.String(120), nullable=False)
     caption = db.Column(db.String(255), nullable=False)
 
     def __repr__(self):
         return '<Image %r>' % self.name
 
-## We need something for captions
+# This is terrible design, we want to have subtables for each Image table 
+# but for time's sake we decided one table of all comments would work
+class Comments(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    parent_image = db.Column(db.String(255), nullable=False)
+    author = db.Column(db.String(120), nullable=False)
+
+    def __repr__(self):
+        return '<Comment %r>' % self.author + self.parent_image
 
 
 class Viewable(db.Model):
@@ -51,5 +59,5 @@ class Viewable(db.Model):
     user_name = db.Column(db.String(120), nullable=False)
 
     def __repr__(self):
-        return '<Viewable %r>' % self.image_id + user_id
+        return '<Viewable %r>' % self.image_name + user_name
 
