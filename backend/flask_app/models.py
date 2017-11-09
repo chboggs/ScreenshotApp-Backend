@@ -49,6 +49,7 @@ class Comments(db.Model):
     parent_image = db.Column(db.String(255), nullable=False)
     author = db.Column(db.String(120), nullable=False)
     comment_string = db.Column(db.String(255), nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
         return '<Comment %r>' % self.author + self.parent_image

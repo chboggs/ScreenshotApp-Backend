@@ -315,7 +315,32 @@ def add_comment():
         ))
     db.session.commit()
 
-    return jsonify({"msg": "Successfully edited caption"}), Status.HTTP_OK_BASIC
+    return jsonify({"msg": "Successfully added comment"}), Status.HTTP_OK_BASIC
+
+@app.route('/api/get-comments', methods=['GET'])
+@login_required
+def get_comments():
+    filename = request.args.get('filename')
+
+    if not filename:
+        return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
+    if not Image.query.filter(Image.name == filename).first():
+        return jsonify({"msg": "Invalid filename"}), Status.HTTP_BAD_REQUEST
+
+    if not Image.query.filter(Image.name == filename).first().owner == current_user.username and not Viewable.query.filter(Viewable.image_name == filename and Viewable.user_name == current_user.username).first():
+        return jsonify({"msg": "You do not have permissions for this image"}), Status.HTTP_BAD_UNAUTHORIZED
+
+    image_comments = Comments.query.filter(Comments.parent_image == filename).order_by(Comments.timestamp)
+
+    authors = []
+    comment_strings = []
+    for comment in image_comments:
+        authors.append(comment.author)
+        comment_strings.append(comment.comment_string)
+
+    comments = [{"Author": aut, "Comment": comm} for aut,comm in zip(authors, comment_strings) ]
+
+    return jsonify({"comments": comments})
 
 
 def main():
