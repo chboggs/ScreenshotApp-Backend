@@ -228,6 +228,26 @@ def get_image():
 
     return send_file(os.path.join(image_dir, filename), mimetype='image/gif'), Status.HTTP_OK_BASIC
 
+@app.route('/api/get-owned-images', methods=['GET'])
+@login_required
+def get_owned_images():
+
+    if not Image.query.filter(Image.owner == current_user.username).first():
+        return jsonify({"msg": "Current user owns no images"}), Status.HTTP_BAD_REQUEST
+
+    owned_images = Image.query.filter(Image.owner == current_user.username)
+
+    image_info = []
+    image_names = []
+    captions = []
+    for image in owned_images:
+        image_names.append(image.name)
+        captions.append(image.caption)
+
+    image_info = [{"Name": name, "Caption": caption} for name,caption in zip(image_names, captions) ]
+    return jsonify({"images": image_info})
+
+
 @app.route('/api/edit-caption', methods=['POST'])
 @login_required
 def edit_caption():
