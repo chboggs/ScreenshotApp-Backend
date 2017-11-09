@@ -248,6 +248,32 @@ def get_owned_images():
     return jsonify({"images": image_info})
 
 
+@app.route('/api/get-viewable-images', methods=['GET'])
+@login_required
+def get_viewable_images():
+
+    if not Viewable.query.filter(Viewable.user_name == current_user.username).first():
+        return jsonify({"msg": "Current user cannot view anyone else's images"}), Status.HTTP_BAD_REQUEST
+
+    viewable_filenames = Viewable.query.filter(Viewable.user_name == current_user.username)
+    viewable_images = []
+    for viewable in viewable_filenames:
+        image = Image.query.filter(Image.name == viewable.image_name).first()
+        viewable_images.append(image)
+
+    image_info = []
+    image_names = []
+    captions = []
+    owners = []
+    for image in viewable_images:
+        image_names.append(image.name)
+        captions.append(image.caption)
+        owners.append(image.owner)
+
+    image_info = [{"Name": name, "Caption": caption, "Owner": owner} for name,caption,owner in zip(image_names, captions, owners) ]
+    return jsonify({"images": image_info})
+
+
 @app.route('/api/edit-caption', methods=['POST'])
 @login_required
 def edit_caption():
