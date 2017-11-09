@@ -72,6 +72,7 @@ def login():
 
 @app.route('/api/new-user', methods=['POST'])
 def new_user():
+
     params = request.get_json()
     username = params.get('username', None)
     hashed_password = params.get('password', None)
@@ -84,7 +85,7 @@ def new_user():
 
     if User.query.filter(User.username == username).first() or User.query.filter(User.email == email).first():
         return jsonify({"msg": "Username or email taken"}), Status.HTTP_BAD_REQUEST
-    
+
     db.session.add(User(
         username=username, email=email, password=hashed_password, first_name=first_name, last_name=last_name
         ))
@@ -115,6 +116,42 @@ def new_image():
 
     return jsonify({"msg": "Successfully added image"}), Status.HTTP_OK_BASIC
 
+@app.route('/api/delete-image', methods=['DELETE'])
+@login_required
+def delete_image():
+
+    params = request.get_json()
+    image_name = params.get('image_name', None)
+
+    if not image_name:
+        return jsonify({"msg": "Must specify image name"}), Status.HTTP_BAD_REQUEST
+
+    victim = Image.query.filter(Image.name == image_name).first()
+    if not victim:
+        return jsonify({"msg": "Image does not exist"}), Status.HTTP_BAD_REQUEST
+
+    if current_user.username != victim.owner:
+        return jsonify({"msg": "Current user does not own the specified image"}), Status.HTTP_BAD_UNAUTHORIZED
+
+    db.session.delete(victim)
+    db.session.commit()
+
+    path_to_image = os.path.join(image_dir, image_name)
+    if not os.path.exists(path_to_image):
+        return jsonify({"msg": "Could not find image on server"}), Status.HTTP_SERVICE_UNAVAILABLE
+
+    try:
+        os.remove(path_to_image)
+    except OSError as e:
+        print(e)
+        return jsonify({"msg": "OS error when deleting image"}), Status.HTTP_SERVICE_UNAVAILABLE
+
+    if Image.query.filter(Image.name == image_name).first():
+        return jsonify({"msg": "Unsuccessful delete"}), Status.HTTP_SERVICE_UNAVAILABLE
+
+    return jsonify({"msg": "Successfully deleted image"}), Status.HTTP_OK_BASIC
+
+
 @app.route('/api/add-viewer', methods=['POST'])
 @login_required
 def add_viewer():
@@ -142,11 +179,6 @@ def add_viewer():
 
 
     return jsonify({"msg": "Successfully added viewer"}), Status.HTTP_OK_BASIC
-
-
-# @app.route('/api/get-image', methods=['GET'])
-# @login_required
-# def new_image():
 
 
 def main():
