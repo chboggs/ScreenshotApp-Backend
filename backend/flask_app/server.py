@@ -184,6 +184,33 @@ def add_viewer():
     return jsonify({"msg": "Successfully added viewer"}), Status.HTTP_OK_BASIC
 
 
+@app.route('/api/delete-viewer', methods=['DELETE'])
+@login_required
+def delete_viewer():
+    params = request.get_json()
+    filename = params.get('filename', None)
+    victim = params.get('victim', None)
+
+    if not filename or not victim:
+        return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
+
+    if not User.query.filter(User.username == victim).first() or not Image.query.filter(Image.name == filename).first():
+        return jsonify({"msg": "Invalid user or filename"}), Status.HTTP_BAD_REQUEST
+
+    owner = User.query.filter(User.username == Image.query.filter(Image.name == filename).first().owner).first()
+
+    if victim == owner.username:
+        return jsonify({"msg": "Cannot delete owner"}), Status.HTTP_BAD_REQUEST
+    if not Viewable.query.filter(Viewable.image_name == filename and Viewable.user_name == victim).first():
+        return jsonify({"msg": "User cannot view already"}), Status.HTTP_BAD_REQUEST
+
+    db.session.delete(Viewable.query.filter(Viewable.image_name == filename and Viewable.user_name == victim).first())
+    db.session.commit()
+
+
+    return jsonify({"msg": "Successfully deleted viewer"}), Status.HTTP_OK_BASIC
+
+
 @app.route('/api/get-image', methods=['GET'])
 @login_required
 def get_image():
