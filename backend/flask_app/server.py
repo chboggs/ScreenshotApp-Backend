@@ -136,6 +136,11 @@ def delete_image():
     if current_user.username != victim.owner:
         return jsonify({"msg": "Current user does not own the specified image"}), Status.HTTP_BAD_UNAUTHORIZED
 
+    comments = Comments.query.filter(Comments.parent_image == victim.name)
+    for comment in comments:
+        db.session.delete(comment)
+        db.session.commit()
+
     db.session.delete(victim)
     db.session.commit()
 
