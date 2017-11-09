@@ -37,6 +37,7 @@ class Image(db.Model):
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     path_to_image = db.Column(db.String(255), nullable=False)
     owner = db.Column(db.Integer, nullable=False)
+    caption = db.Column(db.String(255), nullable=False)
 
     def __repr__(self):
         return '<Image %r>' % self.name

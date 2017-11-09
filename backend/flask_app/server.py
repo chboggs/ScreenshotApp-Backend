@@ -9,7 +9,7 @@ import traceback
 import hashlib
 import os, errno
 from datetime import datetime
-from flask import Flask, Response, request, jsonify, current_app
+from flask import Flask, Response, request, jsonify, current_app, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, current_user , login_required
 from gevent.wsgi import WSGIServer
@@ -99,6 +99,9 @@ def new_image():
     if 'image' not in request.files:
         return jsonify({"msg": "Missing image"}), Status.HTTP_BAD_REQUEST
     new_im = request.files['image']
+    caption = ""
+    if "caption" in request.form:
+        caption = request.form["caption"]
     name = new_im.filename
 
     if not name or name == '' or len(name) > 50:
@@ -110,7 +113,7 @@ def new_image():
     fw.close()
 
     db.session.add(Image(
-        name=name, owner=current_user.username, path_to_image=path_to_image
+        name=name, owner=current_user.username, path_to_image=path_to_image, caption=caption
         ))
     db.session.commit()
 
@@ -179,6 +182,44 @@ def add_viewer():
 
 
     return jsonify({"msg": "Successfully added viewer"}), Status.HTTP_OK_BASIC
+
+
+@app.route('/api/get-image', methods=['GET'])
+@login_required
+def get_image():
+    filename = request.args.get('filename')
+
+    if not filename:
+        return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
+    if not Image.query.filter(Image.name == filename).first():
+        return jsonify({"msg": "Invalid filename"}), Status.HTTP_BAD_REQUEST
+
+    if not Image.query.filter(Image.name == filename).first().owner == current_user.username and not Viewable.query.filter(Viewable.image_name == filename and Viewable.user_name == current_user.username).first():
+        return jsonify({"msg": "Cannot view image"}), Status.HTTP_BAD_UNAUTHORIZED
+
+    # Okay they can view the image
+
+    return send_file(os.path.join(image_dir, filename), mimetype='image/gif'), Status.HTTP_OK_BASIC
+
+@app.route('/api/edit-caption', methods=['POST'])
+@login_required
+def edit_caption():
+    params = request.get_json()
+    filename = params.get('filename', None)
+    new_caption = params.get('new-caption', None)
+
+    if not filename or not new_caption:
+        return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
+    if not Image.query.filter(Image.name == filename).first():
+        return jsonify({"msg": "Invalid filename"}), Status.HTTP_BAD_REQUEST
+
+    if not Image.query.filter(Image.name == filename).first().owner == current_user.username:
+        return jsonify({"msg": "You do not own this image"}), Status.HTTP_BAD_UNAUTHORIZED
+
+    # Okay they can edit the caption
+    Image.query.filter(Image.name == filename).first().caption = new_caption
+
+    return jsonify({"msg": "Successfully edited caption"}), Status.HTTP_OK_BASIC
 
 
 def main():
