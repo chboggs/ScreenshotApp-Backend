@@ -164,6 +164,26 @@ def get_image():
 
     return send_file(os.path.join(image_dir, filename), mimetype='image/gif'), Status.HTTP_OK_BASIC
 
+@app.route('/api/edit-caption', methods=['POST'])
+@login_required
+def edit_caption():
+    params = request.get_json()
+    filename = params.get('filename', None)
+    new_caption = params.get('new-caption', None)
+
+    if not filename or not new_caption:
+        return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
+    if not Image.query.filter(Image.name == filename).first():
+        return jsonify({"msg": "Invalid filename"}), Status.HTTP_BAD_REQUEST
+
+    if not Image.query.filter(Image.name == filename).first().owner == current_user.username:
+        return jsonify({"msg": "You do not own this image"}), Status.HTTP_BAD_UNAUTHORIZED
+
+    # Okay they can edit the caption
+    Image.query.filter(Image.name == filename).first().caption = new_caption
+
+    return jsonify({"msg": "Successfully edited caption"}), Status.HTTP_OK_BASIC
+
 
 def main():
     """Main entry point of the app."""
