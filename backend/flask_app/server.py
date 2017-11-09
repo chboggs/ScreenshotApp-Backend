@@ -98,6 +98,9 @@ def new_image():
     if 'image' not in request.files:
         return jsonify({"msg": "Missing image"}), Status.HTTP_BAD_REQUEST
     new_im = request.files['image']
+    caption = ""
+    if "caption" in request.form:
+        caption = request.form["caption"]
     name = new_im.filename
 
     if not name or name == '' or len(name) > 50:
@@ -109,7 +112,7 @@ def new_image():
     fw.close()
 
     db.session.add(Image(
-        name=name, owner=current_user.username, path_to_image=path_to_image
+        name=name, owner=current_user.username, path_to_image=path_to_image, caption=caption
         ))
     db.session.commit()
 
