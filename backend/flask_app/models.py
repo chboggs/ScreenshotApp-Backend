@@ -41,11 +41,13 @@ class Image(db.Model):
     def __repr__(self):
         return '<Image %r>' % self.name
 
+## We need something for captions
+
 
 class Viewable(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    image_id = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.Integer, nullable=False)
+    image_name = db.Column(db.String(120), nullable=False)
+    user_name = db.Column(db.String(120), nullable=False)
 
     def __repr__(self):
         return '<Viewable %r>' % self.image_id + user_id

@@ -37,6 +37,7 @@ def create_image_store():
 def init():
     """Initialize the application with defaults."""
     db.create_all()
+    # db.drop_all()
 
 
 @login_manager.user_loader
@@ -110,8 +111,38 @@ def new_image():
     db.session.add(Image(
         name=name, owner=current_user.username, path_to_image=path_to_image
         ))
+    db.session.commit()
 
     return jsonify({"msg": "Successfully added image"}), Status.HTTP_OK_BASIC
+
+@app.route('/api/add-viewer', methods=['POST'])
+@login_required
+def add_viewer():
+    params = request.get_json()
+    filename = params.get('filename', None)
+    new_viewer = params.get('new-viewer', None)
+
+    if not filename or not new_viewer:
+        return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
+
+    if not User.query.filter(User.username == new_viewer).first() or not Image.query.filter(Image.name == filename).first():
+        return jsonify({"msg": "Invalid user or filename"}), Status.HTTP_BAD_REQUEST
+
+    owner = User.query.filter(User.username == Image.query.filter(Image.name == filename).first().owner).first()
+
+    if new_viewer == owner.username:
+        return jsonify({"msg": "Is owner"}), Status.HTTP_BAD_REQUEST
+    if Viewable.query.filter(Viewable.image_name == filename and Viewable.user_name == new_viewer).first():
+        return jsonify({"msg": "Can already view"}), Status.HTTP_BAD_REQUEST
+
+    db.session.add(Viewable(
+        image_name=filename, user_name=new_viewer
+        ))
+    db.session.commit()
+
+
+    return jsonify({"msg": "Successfully added viewer"}), Status.HTTP_OK_BASIC
+
 
 # @app.route('/api/get-image', methods=['GET'])
 # @login_required
@@ -124,6 +155,7 @@ def main():
         port = 8080
         ip = '0.0.0.0'
         create_image_store()
+
         http_server = WSGIServer((ip, port),
                                  app)
         print("Server started at: {0}:{1}".format(ip, port))
