@@ -15,7 +15,7 @@ from flask_login import LoginManager, login_user, logout_user, current_user , lo
 from gevent.wsgi import WSGIServer
 
 from .http_codes import Status
-from .models import db, User, Image, Viewable
+from .models import db, User, Image, Viewable, Comments
 
 app = create_app()
 
@@ -291,6 +291,29 @@ def edit_caption():
 
     # Okay they can edit the caption
     Image.query.filter(Image.name == filename).first().caption = new_caption
+
+    return jsonify({"msg": "Successfully edited caption"}), Status.HTTP_OK_BASIC
+
+@app.route('/api/add-comment', methods=['POST'])
+@login_required
+def add_comment():
+    params = request.get_json()
+    filename = params.get('filename', None)
+    comment = params.get('comment', None)
+
+    if not filename or not comment:
+        return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
+    if not Image.query.filter(Image.name == filename).first():
+        return jsonify({"msg": "Invalid filename"}), Status.HTTP_BAD_REQUEST
+
+    if not Image.query.filter(Image.name == filename).first().owner == current_user.username and not Viewable.query.filter(Viewable.image_name == filename and Viewable.user_name == current_user.username).first():
+        return jsonify({"msg": "You do not have permissions for this image"}), Status.HTTP_BAD_UNAUTHORIZED
+
+    # Now can comment
+    db.session.add(Comments(
+        parent_image=filename, author=current_user.username, comment_string=comment
+        ))
+    db.session.commit()
 
     return jsonify({"msg": "Successfully edited caption"}), Status.HTTP_OK_BASIC
 

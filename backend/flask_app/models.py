@@ -48,6 +48,7 @@ class Comments(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     parent_image = db.Column(db.String(255), nullable=False)
     author = db.Column(db.String(120), nullable=False)
+    comment_string = db.Column(db.String(255), nullable=False)
 
     def __repr__(self):
         return '<Comment %r>' % self.author + self.parent_image
@@ -57,6 +58,7 @@ class Viewable(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     image_name = db.Column(db.String(120), nullable=False)
     user_name = db.Column(db.String(120), nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
         return '<Viewable %r>' % self.image_name + user_name
