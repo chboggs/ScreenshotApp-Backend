@@ -4,7 +4,7 @@ import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
 import { jsonHeader } from '../utils';
 
-var localstorage = window.localStorage;
+// var localstorage = localStorage;
 
 @Injectable()
 export class AuthenticationService {
@@ -12,7 +12,13 @@ export class AuthenticationService {
   constructor(private http: Http, private router: Router) { }
 
   public isAuthenticated() {
-    return localstorage.getItem('user');
+    return localStorage.getItem('user');
+  }
+
+  public getUser() {
+    return {
+      'user': localStorage.getItem('user')
+    }
   }
 
   public clearUserDataAndRedirect() {
@@ -25,9 +31,7 @@ export class AuthenticationService {
    *
    */
   public login(body: object) {
-    console.log(body)
-    console.log(body['username'])
-    localstorage.setItem('user', body['username'])
+    localStorage.setItem('user', body['username'])
     return this.http.post('/api/login', body)
       .map(this.handleLogin)
       .catch(this.handleError);
@@ -35,7 +39,7 @@ export class AuthenticationService {
 
   public handleLogin(res: Response) {
     let body = res.json();
-    console.log(localstorage.getItem('user'));
+    console.log(localStorage.getItem('user'));
     if (res.status === 200) {
       
     }
@@ -46,15 +50,8 @@ export class AuthenticationService {
    */
   public logout() {
     if (this.isAuthenticated()) {
-      this.postResource('', '/api/logout')
-        .subscribe((data) => this.handleLogout(data),
-        (error) => {
-          if (error.status === 401) {
-            this.router.navigate(['/sessionexpired']);
-          }
-        },
-        () => console.log('got data')
-        );
+      this.postResource('', '/api/logout');
+      this.clearUserDataAndRedirect();  
     } else {
       this.clearUserDataAndRedirect();
     }

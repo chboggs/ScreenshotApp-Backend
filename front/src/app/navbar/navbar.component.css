@@ -5,6 +5,14 @@ Images by Nike.com (http://www.nike.com/us/en_us/)
 Logo by Sneaker-mission.com (http://www.sneaker-mission.com/)
 */
 
+.logout {
+  color: white;
+}
+.logout-p {
+  padding-top: 15px;
+  padding-right: 15px;
+}
+
 .navbar-brand {
   padding: 0px;
 }
