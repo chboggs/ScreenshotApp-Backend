@@ -4,6 +4,7 @@ import { AuthenticationService } from '../authentication';
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../navbar';
 import { WebService } from '../webservices';
+import { Image } from '../image';
 
 @Component({
   selector: 'home',
@@ -13,11 +14,13 @@ import { WebService } from '../webservices';
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  public heroes = [];
+  public ownedImages = [];
+  public viewableImages = [];
   constructor(private http: Http, private router: Router, private webservice: WebService) { }
 
   public ngOnInit() {
     this.webservice.isAuthenticated();
+    this.getData();
   }
 
   public ngOnDestroy() {
@@ -26,24 +29,40 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public clear() {
-    this.heroes = [];
+    this.ownedImages = [];
+    this.viewableImages = [];
   }
 
   /**
    * Fetch the data from the python-flask backend
    */
   public getData() {
-    this.webservice.getDataFromBackend()
+    this.webservice.getOwnedImages()
       .subscribe(
-      (data) => this.handleData(data),
+      (data) => this.handleOwnedImages(data),
       (err) => this.logError(err),
-      () => console.log('got data')
+      () => console.log('got owned images')
+      );
+
+    this.webservice.getViewableImages()
+      .subscribe(
+      (data) => this.handleViewableImages(data),
+      (err) => this.logError(err),
+      () => console.log('got viewable images')
       );
   }
-  private handleData(data: Response) {
+
+  private handleOwnedImages(data: Response) {
     if (data.status === 200) {
       let receivedData = data.json();
-      this.heroes = receivedData['Heroes'];
+      this.ownedImages = receivedData['images'];
+    }
+    console.log(data.json());
+  }
+  private handleViewableImages(data: Response) {
+    if (data.status === 200) {
+      let receivedData = data.json();
+      this.viewableImages = receivedData['images'];
     }
     console.log(data.json());
   }

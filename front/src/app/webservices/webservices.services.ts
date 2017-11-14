@@ -7,8 +7,12 @@ import { Http, Response } from '@angular/http';
 export class WebService {
   constructor(private authService: AuthenticationService) { }
 
-  public getDataFromBackend() {
-    return this.authService.getResource('/api/protected');
+  public getOwnedImages() {
+      return this.authService.getResource('/api/get-owned-images');
+  }
+
+  public getViewableImages() {
+      return this.authService.getResource('/api/get-viewable-images');
   }
 
   public isAuthenticated() {

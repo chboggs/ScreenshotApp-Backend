@@ -98,14 +98,23 @@
   <!-- Main Content -->
   <div class="container-fluid">
     <div class="side-body">
-      <h1> Main Content here </h1>
-      <pre> Resize the screen to view the left slide menu </pre>
-      <button type="button" (click)="getData()" class="btn btn-primary">Get data from backend</button>
-      <button type="button" (click)="clear()" class="btn btn-danger">Clear</button>
+      <h1> Images For This User </h1>
+      <h3> Owned Images: </h3>
       <div class="panel">
         <ul>
-          <li *ngFor="let hero of heroes; let i=index">
-            <p>{{hero}}</p>
+          <li *ngFor="let image of ownedImages; let i=index">
+            <p><b>{{image.name}}</b></p>
+            <p>{{image.caption}}</p>
+          </li>
+        </ul>
+
+      </div>
+      <h3> Viewable Images: </h3>
+      <div class="panel">
+        <ul>
+          <li *ngFor="let image of viewableImages; let i=index">
+            <p><b>{{image.name}}</b></p>
+            <p>{{image.caption}}<i>({{image.owner}})</i></p>
           </li>
         </ul>
 

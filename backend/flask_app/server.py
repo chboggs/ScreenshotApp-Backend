@@ -257,7 +257,7 @@ def get_owned_images():
         image_names.append(image.name)
         captions.append(image.caption)
 
-    image_info = [{"Name": name, "Caption": caption} for name,caption in zip(image_names, captions) ]
+    image_info = [{"name": name, "caption": caption} for name,caption in zip(image_names, captions) ]
     return jsonify({"images": image_info})
 
 
@@ -283,7 +283,7 @@ def get_viewable_images():
         captions.append(image.caption)
         owners.append(image.owner)
 
-    image_info = [{"Name": name, "Caption": caption, "Owner": owner} for name,caption,owner in zip(image_names, captions, owners) ]
+    image_info = [{"name": name, "caption": caption, "owner": owner} for name,caption,owner in zip(image_names, captions, owners) ]
     return jsonify({"images": image_info})
 
 
