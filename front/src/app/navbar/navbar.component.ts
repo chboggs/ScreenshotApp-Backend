@@ -12,7 +12,7 @@ export class NavbarComponent {
   public inputLogo = 'assets/img/logo.png';
   private curUser = "Not Logged In"
   constructor(private authService: AuthenticationService) { 
-  	var userInfo = authService.getUser();
+  	var userInfo = localStorage.getItem('user');
   	this.curUser = userInfo['user'];
   }
 

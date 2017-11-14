@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public ownedImages = [];
   public viewableImages = [];
+  private curUser = localStorage.getItem('user')
   constructor(private http: Http, private router: Router, private webservice: WebService) { }
 
   public ngOnInit() {

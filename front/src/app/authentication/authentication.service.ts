@@ -15,12 +15,6 @@ export class AuthenticationService {
     return localStorage.getItem('user');
   }
 
-  public getUser() {
-    return {
-      'user': localStorage.getItem('user')
-    }
-  }
-
   public clearUserDataAndRedirect() {
     localStorage.clear();
     this.router.navigate(['/login']);
