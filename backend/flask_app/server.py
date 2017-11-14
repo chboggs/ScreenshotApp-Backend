@@ -7,7 +7,7 @@ from . import create_app
 import json
 import traceback
 import hashlib
-import os, errno
+import os, errno, hashlib
 from datetime import datetime
 from flask import Flask, Response, request, jsonify, current_app, send_file
 from flask_sqlalchemy import SQLAlchemy
@@ -61,6 +61,10 @@ def login():
     if not username or not password:
         return jsonify({"msg": "Missing login parameter"}), Status.HTTP_BAD_REQUEST
 
+    m = hashlib.new('sha512')
+    m.update(password.encode('utf-8'))
+    password = m.hexdigest()
+
     registered_user = User.query.filter(User.username == username, User.password == password).first()
 
     if not registered_user:
@@ -75,19 +79,23 @@ def new_user():
 
     params = request.get_json()
     username = params.get('username', None)
-    hashed_password = params.get('password', None)
+    password = params.get('password', None)
     first_name = params.get('first_name', None)
     last_name = params.get('last_name', None)
     email = params.get('email', None)
 
-    if not username or not hashed_password or not first_name or not last_name or not email:
+    if not username or not password or not first_name or not last_name or not email:
         return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
+
+    m = hashlib.new('sha512')
+    m.update(password.encode('utf-8'))
+    password = m.hexdigest()
 
     if User.query.filter(User.username == username).first() or User.query.filter(User.email == email).first():
         return jsonify({"msg": "Username or email taken"}), Status.HTTP_BAD_REQUEST
 
     db.session.add(User(
-        username=username, email=email, password=hashed_password, first_name=first_name, last_name=last_name
+        username=username, email=email, password=password, first_name=first_name, last_name=last_name
         ))
     db.session.commit()
 
