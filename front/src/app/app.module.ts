@@ -23,6 +23,7 @@ import { ROUTES } from './app.routes';
 // App is our top level component
 import { AppComponent } from './app.component';
 import { LoginFormComponent } from './login';
+import { NewUserFormComponent } from './new-user';
 import { NavbarComponent } from './navbar';
 import { SessionExpiredComponent, NotFoundComponent } from './utils';
 import { ErrorMessageComponent } from './errormessage';
@@ -31,6 +32,9 @@ import { AppState, InternalStateType } from './app.service';
 import { HomeComponent } from './home';
 import { AboutComponent } from './about';
 import { NoContentComponent } from './no-content';
+
+import { WebService } from './webservices/webservices.services';
+import { AuthenticationService } from './authentication/authentication.service';
 
 import '../styles/style.css';
 // import '../styles/headings.css';
@@ -57,6 +61,7 @@ type StoreType = {
     HomeComponent,
     NavbarComponent,
     LoginFormComponent,
+    NewUserFormComponent,
     SessionExpiredComponent,
     ErrorMessageComponent,
     NotFoundComponent
@@ -70,7 +75,9 @@ type StoreType = {
   ],
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,
-    APP_PROVIDERS
+    APP_PROVIDERS,
+    WebService,
+    AuthenticationService
   ]
 })
 export class AppModule {

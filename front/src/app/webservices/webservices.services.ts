@@ -15,6 +15,14 @@ export class WebService {
       return this.authService.getResource('/api/get-viewable-images');
   }
 
+  /**
+   * Send request for a new user
+   *
+   */
+  public createUser(body: object) {
+    return this.authService.postResource(body, '/api/new-user');
+  }
+
   public isAuthenticated() {
     if (!this.authService.isAuthenticated()) {
       this.authService.clearUserDataAndRedirect();

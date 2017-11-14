@@ -14,7 +14,7 @@ class Email {
   styleUrls: ['./errormessage.component.css']
 })
 export class ErrorMessageComponent {
-  public inputLogo = 'assets/img/angularclass-logo.png';
+  public inputLogo = 'assets/img/logo.png';
   public textmessage: string = 'Forgot your password ?';
   public emailModel: Email = new Email('');
   public form;

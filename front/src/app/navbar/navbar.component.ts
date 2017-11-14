@@ -9,7 +9,7 @@ import { AuthenticationService } from '../authentication';
 })
 export class NavbarComponent {
 
-  public inputLogo = 'assets/img/angularclass-logo.png';
+  public inputLogo = 'assets/img/logo.png';
   constructor(private authService: AuthenticationService) { }
 
   public logout() {

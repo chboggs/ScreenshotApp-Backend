@@ -22,9 +22,9 @@ import { LoginFormComponent } from './login/login.component';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  public angularclassLogo = 'assets/img/angularclass-avatar.png';
-  public name = 'Angular 2 Webpack Starter';
-  public url = 'https://twitter.com/AngularClass';
+  public angularclassLogo = 'assets/img/logo.png';
+  public name = 'Screenshot App';
+  // public url = 'https://twitter.com/AngularClass';
 
   constructor(
     public appState: AppState

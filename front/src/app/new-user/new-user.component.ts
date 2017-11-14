@@ -2,54 +2,57 @@ import { Component, Injectable, ViewChild, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { AuthenticationService } from '../authentication/authentication.service';
+import { WebService } from '../webservices/webservices.services';
 import { UserComponent } from '../utils/user';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Rx';
 
 @Component({
-  selector: `login`,
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
-  // Here we tell Angular that we want the form
-  // directives to be available in this component
+  selector: `new-user`,
+  templateUrl: './new-user.component.html',
+  styleUrls: ['./new-user.component.css'],
   providers: [AuthenticationService]
 })
-export class LoginFormComponent implements OnInit {
+export class NewUserFormComponent implements OnInit {
 
   public inputLogo = 'assets/img/logo.png';
   public model: UserComponent = new UserComponent(1, '', '');
-  public logintext: string = 'Sign in to continue';
+  public newUserText: string = 'Enter information';
   public color: string = 'black';
   public myForm: FormGroup;
-  public forgotPassword: boolean = false;
 
-  constructor(private _service: AuthenticationService, private router: Router) {
+  constructor(private _service: AuthenticationService, private _webservice: WebService, 
+    private router: Router) {
     let group: any = {};
     group.username = new FormControl('', Validators.required);
     group.password = new FormControl('', Validators.required);
-    group.type = new FormControl('login');
+    group.firstName = new FormControl('', Validators.required);
+    group.lastName = new FormControl('', Validators.required);
+    group.email = new FormControl('', Validators.required);
+    group.type = new FormControl('new-user');
     this.myForm = new FormGroup(group);
   }
 
   public ngOnInit() {
-    console.log('Inside the login page');
+    console.log('Inside the new-user page');
 
     if (this._service.isAuthenticated()) {
-      console.log('We are authenticated, why go to login page again');
+      console.log('Already logged in as a user');
       this.router.navigate(['/home']);
     }
   }
 
-  public loginUser() {
-
+  public createUser() {
     let body = {
       username: this.myForm.controls['username'].value,
-      password: this.myForm.controls['password'].value
+      password: this.myForm.controls['password'].value,
+      first_name: this.myForm.controls['firstName'].value,
+      last_name: this.myForm.controls['lastName'].value,
+      email: this.myForm.controls['email'].value,
     };
-    this._service.login(body)
+    this._webservice.createUser(body)
       .subscribe((data) => {
-        console.log(data);
-        this.router.navigate(['/home']);
+        this.router.navigate(['/login']);
       },
       (error) => this.handleError(error)
       );

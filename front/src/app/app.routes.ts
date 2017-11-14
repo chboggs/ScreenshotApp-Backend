@@ -4,6 +4,7 @@ import { AboutComponent } from './about';
 import { NoContentComponent } from './no-content';
 
 import { LoginFormComponent } from './login';
+import { NewUserFormComponent } from './new-user';
 import { NotFoundComponent } from './utils';
 import { DataResolver } from './app.resolver';
 
@@ -14,6 +15,7 @@ export const ROUTES: Routes = [
     pathMatch: 'full'
   },
   { path: 'login', component: LoginFormComponent },
+  { path: 'new-user', component: NewUserFormComponent },
   // { path: 'sessionexpired', component: SessionExpiredComponent },
   // { path: 'forgot-password', component: ErrorMessage },
   { path: 'home', component: HomeComponent },

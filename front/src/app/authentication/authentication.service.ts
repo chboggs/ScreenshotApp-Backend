@@ -4,20 +4,20 @@ import { Http, Headers, Response, RequestOptions } from '@angular/http';
 import { Router } from '@angular/router';
 import { jsonHeader } from '../utils';
 
+var localstorage = window.localStorage;
+
 @Injectable()
 export class AuthenticationService {
-
-  private loginSuccessful: boolean = true;
 
   constructor(private http: Http, private router: Router) { }
 
   public isAuthenticated() {
-    return !this.checkTokenExpired();
+    return localstorage.getItem('user');
   }
 
   public clearUserDataAndRedirect() {
     localStorage.clear();
-    this.router.navigate(['/sessionexpired']);
+    this.router.navigate(['/login']);
   }
 
   /**
@@ -25,9 +25,20 @@ export class AuthenticationService {
    *
    */
   public login(body: object) {
-    return this.http.post('/api/login', body, jsonHeader())
-      .map(this.extractToken)
+    console.log(body)
+    console.log(body['username'])
+    localstorage.setItem('user', body['username'])
+    return this.http.post('/api/login', body)
+      .map(this.handleLogin)
       .catch(this.handleError);
+  }
+
+  public handleLogin(res: Response) {
+    let body = res.json();
+    console.log(localstorage.getItem('user'));
+    if (res.status === 200) {
+      
+    }
   }
 
   /**
@@ -55,56 +66,33 @@ export class AuthenticationService {
    * Extracts the current token from the local storage else redirects to
    * session expired modal.
    */
-  public postResource(body: String, url: string) {
-    let token = localStorage.getItem('token');
-    let postHeader = new Headers({ Authorization: 'Bearer ' + token });
-    postHeader.append('Content-Type', 'application/json');
-    let options = new RequestOptions({ headers: postHeader });
-    return this.http.post(url, body, options);
+  public postResource(body: object, url: string) {
+    // let token = localStorage.getItem('token');
+    // let postHeader = new Headers({ Authorization: 'Bearer ' + token });
+    // postHeader.append('Content-Type', 'application/json');
+    // let options = new RequestOptions({ headers: postHeader });
+    // return this.http.post(url, body, options);
+    console.log(url)
+    return this.http.post(url, body);
   }
 
   /**
    * Get resource to fetch data from server using an end point as `url`
    */
   public getResource(url: string) {
-    let token = localStorage.getItem('token');
-    let getHeader = new Headers({ Authorization: 'Bearer ' + token });
-    let options = new RequestOptions({ headers: getHeader });
-    return this.http.get(url, options);
+    // let token = localStorage.getItem('token');
+    // let getHeader = new Headers({ Authorization: 'Bearer ' + token });
+    // let options = new RequestOptions({ headers: getHeader });
+    return this.http.get(url);
   }
 
-  private extractToken(res: Response) {
-    let body = res.json();
-    if (res.status === 200) {
-      let response = 'response';
-      let tokenString = 'jwt';
-      let token = body[tokenString];
-      //TODO: Decode token and get expiry time from here, someone has to implement this. :(
-      let expiry = new Date(body['exp']);
-      let maxTokenExpiryTime = expiry.getTime();
-      localStorage.setItem('token', token);
-      localStorage.setItem('exp', String(maxTokenExpiryTime));
-    }
-  }
 
-  /**
-   *
-   * This function checks if the current token of the app has been expired
-   * based on the first time authentication from server
-   */
-  private checkTokenExpired() {
-    let expiryTime = Number(localStorage.getItem('exp'));
-    let curTime = Math.floor(new Date().getTime() / 1000);
-    if (curTime > expiryTime) {
-      console.log('Session expired.');
-      return true;
-    }
-    return false;
-  }
 
   private handleError(error: any) {
     // In a real world app, we might use a remote logging infrastructure
     // We'd also dig deeper into the error to get a better message
+    this.loggedIn = false;
+    this.loggedInUser = "";
     let errMsg = (error.message) ? error.message :
       error.status ? `${error.status} - ${error.statusText}` : 'Server error';
     console.error(errMsg); // log to console instead
