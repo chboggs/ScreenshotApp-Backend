@@ -10,10 +10,9 @@ import { AuthenticationService } from '../authentication';
 export class NavbarComponent {
 
   public inputLogo = 'assets/img/logo.png';
-  private curUser = "Not Logged In"
-  constructor(private authService: AuthenticationService) { 
-  	var userInfo = localStorage.getItem('user');
-  	this.curUser = userInfo['user'];
+  private curUser = 'Not Logged In';
+  constructor(private authService: AuthenticationService) {
+    this.curUser = localStorage.getItem('user');
   }
 
   public logout() {

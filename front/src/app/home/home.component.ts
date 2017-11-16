@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public ownedImages = [];
   public viewableImages = [];
-  private curUser = localStorage.getItem('user')
+  private curUser = localStorage.getItem('user');
   constructor(private http: Http, private router: Router, private webservice: WebService) { }
 
   public ngOnInit() {
@@ -57,6 +57,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (data.status === 200) {
       let receivedData = data.json();
       this.ownedImages = receivedData['images'];
+    } else {
+      this.ownedImages = [];
     }
     console.log(data.json());
   }
@@ -64,6 +66,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (data.status === 200) {
       let receivedData = data.json();
       this.viewableImages = receivedData['images'];
+    } else {
+      this.viewableImages = [];
     }
     console.log(data.json());
   }

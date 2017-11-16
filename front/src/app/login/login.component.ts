@@ -32,6 +32,7 @@ export class LoginFormComponent implements OnInit {
   }
 
   public ngOnInit() {
+    // localStorage.clear();
     console.log('Inside the login page');
 
     if (this._service.isAuthenticated()) {

@@ -9,6 +9,7 @@ import { jsonHeader } from '../utils';
 @Injectable()
 export class AuthenticationService {
 
+  private curUser = '';
   constructor(private http: Http, private router: Router) { }
 
   public isAuthenticated() {
@@ -25,17 +26,17 @@ export class AuthenticationService {
    *
    */
   public login(body: object) {
-    localStorage.setItem('user', body['username'])
     return this.http.post('/api/login', body)
-      .map(this.handleLogin)
+      .map(this.handleLogin, { curUser: body['username'] })
       .catch(this.handleError);
   }
 
   public handleLogin(res: Response) {
-    let body = res.json();
-    console.log(localStorage.getItem('user'));
     if (res.status === 200) {
-      
+      console.log(this.curUser);
+      localStorage.setItem('user', this.curUser);
+    } else {
+      this.curUser = '';
     }
   }
 
@@ -45,7 +46,7 @@ export class AuthenticationService {
   public logout() {
     if (this.isAuthenticated()) {
       this.postResource('', '/api/logout');
-      this.clearUserDataAndRedirect();  
+      this.clearUserDataAndRedirect();
     } else {
       this.clearUserDataAndRedirect();
     }
@@ -63,7 +64,7 @@ export class AuthenticationService {
     // postHeader.append('Content-Type', 'application/json');
     // let options = new RequestOptions({ headers: postHeader });
     // return this.http.post(url, body, options);
-    console.log(url)
+    console.log(url);
     return this.http.post(url, body);
   }
 
@@ -77,13 +78,11 @@ export class AuthenticationService {
     return this.http.get(url);
   }
 
-
-
   private handleError(error: any) {
     // In a real world app, we might use a remote logging infrastructure
     // We'd also dig deeper into the error to get a better message
     this.loggedIn = false;
-    this.loggedInUser = "";
+    this.loggedInUser = '';
     let errMsg = (error.message) ? error.message :
       error.status ? `${error.status} - ${error.statusText}` : 'Server error';
     console.error(errMsg); // log to console instead
