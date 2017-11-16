@@ -5,6 +5,7 @@ import { NoContentComponent } from './no-content';
 
 import { LoginFormComponent } from './login';
 import { NewUserFormComponent } from './new-user';
+import { ImageComponent } from './image';
 import { NotFoundComponent } from './utils';
 import { DataResolver } from './app.resolver';
 
@@ -16,6 +17,7 @@ export const ROUTES: Routes = [
   },
   { path: 'login', component: LoginFormComponent },
   { path: 'new-user', component: NewUserFormComponent },
+  { path: 'image', component: NewUserFormComponent },
   // { path: 'sessionexpired', component: SessionExpiredComponent },
   // { path: 'forgot-password', component: ErrorMessage },
   { path: 'home', component: HomeComponent },

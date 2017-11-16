@@ -24,7 +24,7 @@ import { LoginFormComponent } from './login/login.component';
 export class AppComponent implements OnInit {
   public angularclassLogo = 'assets/img/logo.png';
   public name = 'Screenshot App';
-  // public url = 'https://twitter.com/AngularClass';
+  public url = 'Screenshot App';
 
   constructor(
     public appState: AppState

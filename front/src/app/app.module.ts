@@ -24,6 +24,7 @@ import { ROUTES } from './app.routes';
 import { AppComponent } from './app.component';
 import { LoginFormComponent } from './login';
 import { NewUserFormComponent } from './new-user';
+import { ImageComponent } from './image';
 import { NavbarComponent } from './navbar';
 import { SessionExpiredComponent, NotFoundComponent } from './utils';
 import { ErrorMessageComponent } from './errormessage';
@@ -62,6 +63,7 @@ type StoreType = {
     NavbarComponent,
     LoginFormComponent,
     NewUserFormComponent,
+    ImageComponent,
     SessionExpiredComponent,
     ErrorMessageComponent,
     NotFoundComponent
