@@ -225,8 +225,10 @@ def add_viewer():
     if Viewable.query.filter(Viewable.image_name == filename and Viewable.user_name == new_viewer).first():
         return jsonify({"msg": "Can already view"}), Status.HTTP_BAD_REQUEST
 
+    image_id = Image.query.filter(Image.name == filename).first().id
+
     db.session.add(Viewable(
-        image_name=filename, user_name=new_viewer
+        image_name=filename, image_id=image_id, user_name=new_viewer
         ))
     db.session.commit()
 
@@ -264,14 +266,14 @@ def delete_viewer():
 @app.route('/api/get-image', methods=['GET'])
 @login_required
 def get_image():
-    filename = request.args.get('filename')
+    id = request.args.get('id')
 
-    if not filename:
+    if not id:
         return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
-    if not Image.query.filter(Image.name == filename).first():
-        return jsonify({"msg": "Invalid filename"}), Status.HTTP_BAD_REQUEST
+    if not Image.query.filter(Image.id == id).first():
+        return jsonify({"msg": "Invalid image id"}), Status.HTTP_BAD_REQUEST
 
-    if not Image.query.filter(Image.name == filename).first().owner == current_user.username and not Viewable.query.filter(Viewable.image_name == filename and Viewable.user_name == current_user.username).first():
+    if not Image.query.filter(Image.id == id).first().owner == current_user.username and not Viewable.query.filter(Viewable.image_id == id and Viewable.user_name == current_user.username).first():
         return jsonify({"msg": "Cannot view image"}), Status.HTTP_BAD_UNAUTHORIZED
 
     # Okay they can view the image
@@ -289,12 +291,14 @@ def get_owned_images():
 
     image_info = []
     image_names = []
+    image_ids = []
     captions = []
     for image in owned_images:
         image_names.append(image.name)
+        image_ids.append(image.id)
         captions.append(image.caption)
 
-    image_info = [{"name": name, "caption": caption} for name,caption in zip(image_names, captions) ]
+    image_info = [{"name": name, "id": id, "caption": caption} for name,id,caption in zip(image_names, image_ids, captions) ]
     return jsonify({"images": image_info})
 
 
@@ -313,14 +317,16 @@ def get_viewable_images():
 
     image_info = []
     image_names = []
+    image_ids = []
     captions = []
     owners = []
     for image in viewable_images:
         image_names.append(image.name)
+        image_ids.append(image.id)
         captions.append(image.caption)
         owners.append(image.owner)
 
-    image_info = [{"name": name, "caption": caption, "owner": owner} for name,caption,owner in zip(image_names, captions, owners) ]
+    image_info = [{"name": name, "id": id, "caption": caption, "owner": owner} for name,id,caption,owner in zip(image_names, image_ids, captions, owners) ]
     return jsonify({"images": image_info})
 
 
@@ -348,20 +354,20 @@ def edit_caption():
 @login_required
 def add_comment():
     params = request.get_json()
-    filename = params.get('filename', None)
+    image_id = params.get('image_id', None)
     comment = params.get('comment', None)
 
-    if not filename or not comment:
+    if not image_id or not comment:
         return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
-    if not Image.query.filter(Image.name == filename).first():
-        return jsonify({"msg": "Invalid filename"}), Status.HTTP_BAD_REQUEST
+    if not Image.query.filter(Image.id == image_id).first():
+        return jsonify({"msg": "Invalid image id"}), Status.HTTP_BAD_REQUEST
 
-    if not Image.query.filter(Image.name == filename).first().owner == current_user.username and not Viewable.query.filter(Viewable.image_name == filename and Viewable.user_name == current_user.username).first():
+    if not Image.query.filter(Image.id == image_id).first().owner == current_user.username and not Viewable.query.filter(Viewable.image_id == image_id and Viewable.user_name == current_user.username).first():
         return jsonify({"msg": "You do not have permissions for this image"}), Status.HTTP_BAD_UNAUTHORIZED
 
     # Now can comment
     db.session.add(Comments(
-        parent_image=filename, author=current_user.username, comment_string=comment
+        parent_image=image_id, author=current_user.username, comment_string=comment
         ))
     db.session.commit()
 
@@ -370,17 +376,17 @@ def add_comment():
 @app.route('/api/get-comments', methods=['GET'])
 @login_required
 def get_comments():
-    filename = request.args.get('filename')
+    image_id = request.args.get('image_id')
 
-    if not filename:
+    if not image_id:
         return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
-    if not Image.query.filter(Image.name == filename).first():
-        return jsonify({"msg": "Invalid filename"}), Status.HTTP_BAD_REQUEST
+    if not Image.query.filter(Image.id == image_id).first():
+        return jsonify({"msg": "Invalid image id"}), Status.HTTP_BAD_REQUEST
 
-    if not Image.query.filter(Image.name == filename).first().owner == current_user.username and not Viewable.query.filter(Viewable.image_name == filename and Viewable.user_name == current_user.username).first():
+    if not Image.query.filter(Image.image_id == image_id).first().owner == current_user.username and not Viewable.query.filter(Viewable.image_id == image_id and Viewable.user_name == current_user.username).first():
         return jsonify({"msg": "You do not have permissions for this image"}), Status.HTTP_BAD_UNAUTHORIZED
 
-    image_comments = Comments.query.filter(Comments.parent_image == filename).order_by(Comments.timestamp)
+    image_comments = Comments.query.filter(Comments.parent_image == image_id).order_by(Comments.timestamp)
 
     authors = []
     comment_strings = []

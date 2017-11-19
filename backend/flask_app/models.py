@@ -18,13 +18,13 @@ class User(db.Model):
 
     def is_authenticated(self):
         return True
- 
+
     def is_active(self):
         return True
- 
+
     def is_anonymous(self):
         return False
- 
+
     def get_id(self):
         return self.id
 
@@ -42,11 +42,11 @@ class Image(db.Model):
     def __repr__(self):
         return '<Image %r>' % self.name
 
-# This is terrible design, we want to have subtables for each Image table 
+# This is terrible design, we want to have subtables for each Image table
 # but for time's sake we decided one table of all comments would work
 class Comments(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    parent_image = db.Column(db.String(255), nullable=False)
+    parent_image = db.Column(db.Integer, nullable=False)
     author = db.Column(db.String(120), nullable=False)
     comment_string = db.Column(db.String(255), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -58,9 +58,9 @@ class Comments(db.Model):
 class Viewable(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     image_name = db.Column(db.String(120), nullable=False)
+    image_id = db.Column(db.Integer, nullable=False)
     user_name = db.Column(db.String(120), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
         return '<Viewable %r>' % self.image_name + user_name
-
