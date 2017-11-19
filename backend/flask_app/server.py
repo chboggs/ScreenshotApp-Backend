@@ -44,6 +44,10 @@ def init():
 def load_user(id):
     return User.query.get(int(id))
 
+@app.route('/', methods=['GET','POST'])
+def test():
+    return "Hello"
+
 @app.route('/api/logout', methods=['POST'])
 @login_required
 def logout():
