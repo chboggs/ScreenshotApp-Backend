@@ -222,15 +222,25 @@ def add_viewer():
     owner = User.query.filter(User.username == Image.query.filter(Image.id == image_id).first().owner).first()
     image = Image.query.filter(Image.id == image_id).first()
 
+    # results = Viewable.query.filter(Viewable.image_name == image.name)
+    # for result in results:
+    #     print(result)
+    #
+    # print("result:")
+    # print(Viewable.query.filter(Viewable.image_name == image.name and Viewable.user_name == new_viewer).first())
+    # print("image name: " + image.name + " user name: " + new_viewer)
+
     if new_viewer == owner.username:
         return jsonify({"msg": "Is owner"}), Status.HTTP_BAD_REQUEST
-    if Viewable.query.filter(Viewable.image_name == image.name and Viewable.user_name == new_viewer).first():
-        return jsonify({"msg": "Can already view"}), Status.HTTP_BAD_REQUEST
+    # if Viewable.query.filter(Viewable.image_name == image.name and Viewable.user_name == new_viewer).first():
+    #     return jsonify({"msg": "Can already view"}), Status.HTTP_BAD_REQUEST
 
     db.session.add(Viewable(
         image_name=image.name, image_id=image_id, user_name=new_viewer
         ))
     db.session.commit()
+
+    print("here 5")
 
 
     return jsonify({"msg": "Successfully added viewer"}), Status.HTTP_OK_BASIC

@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthenticationService } from '../../authentication';
+
 @Component({
   template: `
   <div class="container">
@@ -23,8 +25,8 @@ import { ActivatedRoute, Router } from '@angular/router';
      margin-right: auto; margin-bottom: auto; margin-top: auto;}`]
 })
 export class NotFoundComponent {
-  constructor(private router: Router) { }
+  constructor(private authService: AuthenticationService) { }
   public redirectToLogin() {
-    this.router.navigate(['/login']);
+    this.authService.clearUserDataAndRedirect();
   }
 }

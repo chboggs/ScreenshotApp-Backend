@@ -61,4 +61,4 @@ class Viewable(db.Model):
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
-        return '<Viewable %r>' % self.image_name + user_name
+        return '<Viewable %r>' % self.image_name + self.user_name
