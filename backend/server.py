@@ -19,6 +19,7 @@ from flask_cors import CORS, cross_origin
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+CORS(app)
 
 CORS(app)
 
@@ -327,7 +328,7 @@ def get_image_info():
 def get_owned_images():
 
     if not Image.query.filter(Image.owner == current_user.username).first():
-        return jsonify({"msg": "Current user owns no images"}), Status.HTTP_BAD_REQUEST
+        return jsonify({"msg": "Current user owns no images"}), Status.HTTP_OK_BASIC
 
     owned_images = Image.query.filter(Image.owner == current_user.username)
 
@@ -349,7 +350,7 @@ def get_owned_images():
 def get_viewable_images():
 
     if not Viewable.query.filter(Viewable.user_name == current_user.username).first():
-        return jsonify({"msg": "Current user cannot view anyone else's images"}), Status.HTTP_BAD_REQUEST
+        return jsonify({"msg": "Current user cannot view anyone else's images"}), Status.HTTP_OK_BASIC
 
     viewable_filenames = Viewable.query.filter(Viewable.user_name == current_user.username)
     viewable_images = []
