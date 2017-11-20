@@ -15,9 +15,12 @@ from flask import Flask, Response, request, jsonify, current_app, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, current_user , login_required
 from gevent.wsgi import WSGIServer
+from flask_cors import CORS, cross_origin
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+CORS(app)
 
 cur_dir = os.getcwd()
 image_dir = os.path.join(cur_dir, 'images')
@@ -229,9 +232,9 @@ def add_viewer():
     # print("result:")
     # print(Viewable.query.filter(Viewable.image_name == image.name and Viewable.user_name == new_viewer).first())
     # print("image name: " + image.name + " user name: " + new_viewer)
-
-    if new_viewer == owner.username:
-        return jsonify({"msg": "Is owner"}), Status.HTTP_BAD_REQUEST
+    #
+    # if new_viewer == owner.username:
+    #     return jsonify({"msg": "Is owner"}), Status.HTTP_BAD_REQUEST
     # if Viewable.query.filter(Viewable.image_name == image.name and Viewable.user_name == new_viewer).first():
     #     return jsonify({"msg": "Can already view"}), Status.HTTP_BAD_REQUEST
 
