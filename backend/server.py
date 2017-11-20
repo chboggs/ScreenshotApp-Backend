@@ -420,11 +420,13 @@ def get_comments():
 
     authors = []
     comment_strings = []
+    timestamps = []
     for comment in image_comments:
         authors.append(comment.author)
         comment_strings.append(comment.comment_string)
+        timestamps.append(comment.timestamp)
 
-    comments = [{"Author": aut, "Comment": comm} for aut,comm in zip(authors, comment_strings) ]
+    comments = [{"author": aut, "comment": comm, "timestamp": timestamp} for aut,comm,timestamp in zip(authors, comment_strings, timestamps) ]
 
     return jsonify({"comments": comments})
 

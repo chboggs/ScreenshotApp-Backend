@@ -4,16 +4,28 @@
 <div class="container-fluid top">
   <h3> Selected Image </h3>
   <p> Uploaded by: {{imageInfo.owner}} </p>
-  <p> Uploaded at: {{imageInfo.timestamp}} </p>
+  <p> Uploaded on: {{imageInfo.timestamp}} </p>
   <p> Caption: {{imageInfo.caption}} </p>
   <button routerLink='/home' routerLinkActive="active"> Back </button>
 
   <div *ngIf="comments.length">
+      <h4> Comments: </h4>
     <ul>
       <li *ngFor="let comment of comments; let i=index">
-        <p>{{comment}}</p>
+        <p>"{{comment.comment}}"</p>
+        <p>By: {{comment.author}}</p>
+        <p>Posted at: {{comment.timestamp}}</p>
       </li>
     </ul>
   </div>
 
+  <p> Add comment: </p>
+  <form #registrationForm="ngForm" (ngSubmit)="createComment()" [formGroup]="commentForm">
+    <div class="form-group">
+      <input id="comment" type="text" required autofocus placeholder="Comment" class="form-control" formControlName="comment">
+    </div>
+    <div class="form-group">
+      <button type="submit">Add Comment</button>
+    </div>
+  </form>
 </div>

@@ -6,6 +6,8 @@ import { NavbarComponent } from '../navbar';
 import { WebService } from '../webservices';
 import { ImageData } from '../imagedata';
 import { ActivatedRoute } from '@angular/router';
+import { FormGroup, Validators, FormControl } from '@angular/forms';
+import { CommentData } from '../commentdata';
 
 @Component({
   selector: 'image',
@@ -16,7 +18,9 @@ import { ActivatedRoute } from '@angular/router';
 export class ImageComponent implements OnInit, OnDestroy {
 
   public imageInfo = new ImageData(-1, "", "", -1, "");
-  public comments = [];
+  public comments: [CommentData] = [];
+  public commentForm: FormGroup;
+
   private curUser = localStorage.getItem('user');
 
   constructor(
@@ -24,7 +28,13 @@ export class ImageComponent implements OnInit, OnDestroy {
       private router: Router,
       private webservice: WebService,
       private route: ActivatedRoute
-  ) { }
+  ) {
+      let group: any = {};
+      group.image_id = new FormControl('', Validators.required);
+      group.comment = new FormControl('', Validators.required);
+      group.type = new FormControl('new-comment');
+      this.commentForm = new FormGroup(group);
+  }
 
   public ngOnInit() {
     this.webservice.isAuthenticated();
@@ -59,12 +69,41 @@ export class ImageComponent implements OnInit, OnDestroy {
       () => console.log('got image info')
       );
 
-    // this.webservice.getComments(this.id)
-    //   .subscribe(
-    //   (data) => this.handleComments(data),
-    //   (err) => this.logError(err),
-    //   () => console.log('got comments')
-    //   );
+    this.webservice.getComments(this.id)
+      .subscribe(
+      (data) => this.handleComments(data),
+      (err) => this.logError(err),
+      () => console.log('got comments')
+      );
+  }
+
+  public refreshComments() {
+      this.comments = [];
+      this.webservice.getComments(this.id)
+        .subscribe(
+        (data) => this.handleComments(data),
+        (err) => this.logError(err),
+        () => console.log('got comments')
+        );
+  }
+
+  public createComment() {
+      let body = {
+        image_id: this.imageInfo.id,
+        comment: this.commentForm.controls['comment'].value
+      };
+      this.webservice.createComment(body)
+        .subscribe((data) => {
+          this.refreshComments();
+          
+          let group: any = {};
+          group.image_id = new FormControl('', Validators.required);
+          group.comment = new FormControl('', Validators.required);
+          group.type = new FormControl('new-comment');
+          this.commentForm = new FormGroup(group);
+        },
+        (error) => this.handleError(error)
+        );
   }
 
   private handleImage(data: Response) {
@@ -81,28 +120,27 @@ export class ImageComponent implements OnInit, OnDestroy {
   private handleImageInfo(data: Response) {
     if (data.status === 200) {
       let receivedData = data.json();
-      console.log("data");
-      console.log(receivedData);
-      console.log("caption");
-      console.log(receivedData['caption']);
       this.imageInfo.name = receivedData['name'];
       this.imageInfo.caption = receivedData['caption'];
       this.imageInfo.owner = receivedData['owner'];
       this.imageInfo.id = receivedData['id'];
       this.imageInfo.timestamp = receivedData['timestamp'];
     }
-    console.log(this.imageInfo);
   }
 
   private handleComments(data: Response) {
-    // if (data.status === 200) {
-    //   let receivedData = data.json();
-    //   this.viewableImages = receivedData['images'];
-    // } else {
-    //   this.viewableImages = [];
-    // }
-    console.log('comments');
-    console.log(data);
+    if (data.status === 200) {
+      let receivedData = data.json();
+      for(var i=0; i < receivedData['comments'].length; i++) {
+          this.comments.push(
+              new CommentData(
+                  receivedData['comments'][i]['author'],
+                  receivedData['comments'][i]['comment'],
+                  receivedData['comments'][i]['timestamp']
+              )
+          );
+      }
+    }
   }
 
   private logError(err: Response) {

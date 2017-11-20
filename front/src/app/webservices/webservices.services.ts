@@ -35,6 +35,10 @@ export class WebService {
     return this.authService.postResource(body, '/api/new-user');
   }
 
+  public createComment(body: object) {
+      return this.authService.postResource(body, '/api/add-comment');
+  }
+
   public isAuthenticated() {
     if (!this.authService.isAuthenticated()) {
       this.authService.clearUserDataAndRedirect();
