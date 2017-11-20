@@ -4,7 +4,7 @@ import { AuthenticationService } from '../authentication';
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../navbar';
 import { WebService } from '../webservices';
-import { Image } from '../image';
+import { ImageData } from '../imagedata';
 
 @Component({
   selector: 'image',
@@ -20,8 +20,8 @@ export class ImageComponent implements OnInit, OnDestroy {
   constructor(private http: Http, private router: Router, private webservice: WebService) { }
 
   public ngOnInit() {
-    this.webservice.isAuthenticated();
-    this.getData();
+    // this.webservice.isAuthenticated();
+    // this.getData();
   }
 
   public ngOnDestroy() {
@@ -30,55 +30,55 @@ export class ImageComponent implements OnInit, OnDestroy {
   }
 
   public clear() {
-    this.ownedImages = [];
-    this.viewableImages = [];
+    // this.ownedImages = [];
+    // this.viewableImages = [];
   }
 
   /**
    * Fetch the data from the python-flask backend
    */
   public getData() {
-    this.webservice.getOwnedImages()
-      .subscribe(
-      (data) => this.handleOwnedImages(data),
-      (err) => this.logError(err),
-      () => console.log('got owned images')
-      );
-
-    this.webservice.getViewableImages()
-      .subscribe(
-      (data) => this.handleViewableImages(data),
-      (err) => this.logError(err),
-      () => console.log('got viewable images')
-      );
+    // this.webservice.getOwnedImages()
+    //   .subscribe(
+    //   (data) => this.handleOwnedImages(data),
+    //   (err) => this.logError(err),
+    //   () => console.log('got owned images')
+    //   );
+    //
+    // this.webservice.getViewableImages()
+    //   .subscribe(
+    //   (data) => this.handleViewableImages(data),
+    //   (err) => this.logError(err),
+    //   () => console.log('got viewable images')
+    //   );
   }
 
   private handleOwnedImages(data: Response) {
-    if (data.status === 200) {
-      let receivedData = data.json();
-      this.ownedImages = receivedData['images'];
-    } else {
-      this.ownedImages = [];
-    }
-    console.log(data.json());
+    // if (data.status === 200) {
+    //   let receivedData = data.json();
+    //   this.ownedImages = receivedData['images'];
+    // } else {
+    //   this.ownedImages = [];
+    // }
+    // console.log(data.json());
   }
   private handleViewableImages(data: Response) {
-    if (data.status === 200) {
-      let receivedData = data.json();
-      this.viewableImages = receivedData['images'];
-    } else {
-      this.viewableImages = [];
-    }
-    console.log(data.json());
+    // if (data.status === 200) {
+    //   let receivedData = data.json();
+    //   this.viewableImages = receivedData['images'];
+    // } else {
+    //   this.viewableImages = [];
+    // }
+    // console.log(data.json());
   }
 
   private logError(err: Response) {
-    console.log('There was an error: ' + err.status);
-    if (err.status === 0) {
-      console.error('Seems server is down');
-    }
-    if (err.status === 401) {
-      this.router.navigate(['/sessionexpired']);
-    }
+    // console.log('There was an error: ' + err.status);
+    // if (err.status === 0) {
+    //   console.error('Seems server is down');
+    // }
+    // if (err.status === 401) {
+    //   this.router.navigate(['/sessionexpired']);
+    // }
   }
 }

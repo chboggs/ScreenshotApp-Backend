@@ -4,7 +4,7 @@ import { AuthenticationService } from '../authentication';
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../navbar';
 import { WebService } from '../webservices';
-import { Image } from '../image';
+import { ImageData } from '../imagedata';
 
 @Component({
   selector: 'home',
@@ -57,6 +57,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (data.status === 200) {
       let receivedData = data.json();
       this.ownedImages = receivedData['images'];
+      console.log('owned');
+      console.log(receivedData['images']);
     } else {
       this.ownedImages = [];
     }
@@ -66,6 +68,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (data.status === 200) {
       let receivedData = data.json();
       this.viewableImages = receivedData['images'];
+      console.log('viewable');
+      console.log(receivedData['images']);
     } else {
       this.viewableImages = [];
     }

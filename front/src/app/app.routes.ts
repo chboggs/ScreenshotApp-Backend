@@ -17,7 +17,7 @@ export const ROUTES: Routes = [
   },
   { path: 'login', component: LoginFormComponent },
   { path: 'new-user', component: NewUserFormComponent },
-  { path: 'image', component: NewUserFormComponent },
+  { path: 'image', component: ImageComponent },
   // { path: 'sessionexpired', component: SessionExpiredComponent },
   // { path: 'forgot-password', component: ErrorMessage },
   { path: 'home', component: HomeComponent },
