@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 """Entry point for the server application."""
 
-from . import create_app
+from factory import app, db
+from http_codes import Status
+from models import User, Image, Viewable, Comments
 
 import json
 import traceback
@@ -13,11 +15,6 @@ from flask import Flask, Response, request, jsonify, current_app, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, current_user , login_required
 from gevent.wsgi import WSGIServer
-
-from .http_codes import Status
-from .models import db, User, Image, Viewable, Comments
-
-app = create_app()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -420,3 +417,6 @@ def main():
     finally:
         # Do something here
         pass
+
+if __name__ == '__main__':
+    main()

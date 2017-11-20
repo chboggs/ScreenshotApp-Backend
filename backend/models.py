@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 """All the database related entities are in this module."""
 
-from . import db
-
+from factory import db
 from datetime import datetime
-
 from flask_sqlalchemy import SQLAlchemy
 
 class User(db.Model):
