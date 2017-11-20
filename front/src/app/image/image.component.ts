@@ -22,6 +22,7 @@ export class ImageComponent implements OnInit, OnDestroy {
   public commentForm: FormGroup;
 
   private curUser = localStorage.getItem('user');
+  private img = null;
 
   constructor(
       private http: Http,
@@ -55,12 +56,12 @@ export class ImageComponent implements OnInit, OnDestroy {
    * Fetch the data from the python-flask backend
    */
   public getData() {
-    // this.webservice.getImage(this.id)
-    //   .subscribe(
-    //   (data) => this.handleImage(data),
-    //   (err) => this.logError(err),
-    //   () => console.log('got image')
-    //   );
+    this.webservice.getImage(this.id)
+      .subscribe(
+      (data) => this.handleImage(data),
+      (err) => this.logError(err),
+      () => console.log('got image')
+      );
 
     this.webservice.getImageInfo(this.id)
       .subscribe(
@@ -107,14 +108,12 @@ export class ImageComponent implements OnInit, OnDestroy {
   }
 
   private handleImage(data: Response) {
-    // if (data.status === 200) {
-    //   let receivedData = data.json();
-    //   this.ownedImages = receivedData['images'];
-    // } else {
-    //   this.ownedImages = [];
-    // }
-    console.log('image');
-    console.log(data._body);
+    if (data.status === 200) {
+      // console.log(data);
+      // console.log(data._body);
+      // this.img = data._body;
+      this.img = b64EncodeUnicode(data._body)
+    }
   }
 
   private handleImageInfo(data: Response) {
@@ -152,4 +151,14 @@ export class ImageComponent implements OnInit, OnDestroy {
       this.router.navigate(['/sessionexpired']);
     }
   }
+}
+
+function b64EncodeUnicode(str) {
+    // first we use encodeURIComponent to get percent-encoded UTF-8,
+    // then we convert the percent encodings into raw bytes which
+    // can be fed into btoa.
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+        function toSolidBytes(match, p1) {
+            return String.fromCharCode('0x' + p1);
+    }));
 }

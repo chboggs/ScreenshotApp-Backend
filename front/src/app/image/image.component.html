@@ -6,6 +6,17 @@
   <p> Uploaded by: {{imageInfo.owner}} </p>
   <p> Uploaded on: {{imageInfo.timestamp}} </p>
   <p> Caption: {{imageInfo.caption}} </p>
+	<div *ngIf="img === null; else gotImage">
+	  <p><b>Getting image failed</b></p>
+	</div>
+	<ng-template #gotImage>
+	  <!-- <img src="data:image/jpeg;base64,+img" /> -->
+	  <img [src]="'data:image/jpg;base64,'+img" />
+	  <!-- <p><b>{{img}}</b></p> -->
+	  <!-- <p>{{img}}</p>
+	  <div [ngStyle]="{ 'background-image': 'url(' + result.image_path+ ')'}">> {{ result.name }} </div>
+	  <img [src]="img"> -->
+	</ng-template>
   <button routerLink='/home' routerLinkActive="active"> Back </button>
 
   <div *ngIf="comments.length">
