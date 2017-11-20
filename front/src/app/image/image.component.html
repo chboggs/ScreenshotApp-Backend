@@ -5,6 +5,7 @@
   <h1> Selected Image </h1>
   <p> Uploaded by: {{imageInfo.owner}} </p>
   <p> Uploaded on: {{imageInfo.timestamp}} </p>
+  <img src="{{imageRoute}}" height=500 width=500 class="rotate90">
   <p> Caption: {{imageInfo.caption}} </p>
   <button routerLink='/home' routerLinkActive="active"> Back </button>
   <!-- <p> Grant permission for other user to view image: </p>

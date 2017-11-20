@@ -22,6 +22,7 @@ export class ImageComponent implements OnInit, OnDestroy {
   public commentForm: FormGroup;
   public addViewerForm: FormGroup;
   public addViewerResult = "";
+  public imageRoute = "";
 
   private curUser = localStorage.getItem('user');
 
@@ -50,6 +51,7 @@ export class ImageComponent implements OnInit, OnDestroy {
         this.id = +params['id'];
     });
     this.getData();
+    this.imageRoute = "http://localhost:3000/api/get-image?id=" + this.id;
   }
 
   public ngOnDestroy() {
@@ -112,7 +114,7 @@ export class ImageComponent implements OnInit, OnDestroy {
         },
         (error) => {
             this.addViewerResult = "Unable to grant permission to user";
-            
+
             let groupTwo: any = {};
             groupTwo.viewer = new FormControl('', Validators.required);
             groupTwo.type = new FormControl('add-viewer');
