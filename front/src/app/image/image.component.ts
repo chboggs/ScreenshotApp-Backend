@@ -20,6 +20,8 @@ export class ImageComponent implements OnInit, OnDestroy {
   public imageInfo = new ImageData(-1, "", "", -1, "");
   public comments: [CommentData] = [];
   public commentForm: FormGroup;
+  public addViewerForm: FormGroup;
+  public addViewerResult = "";
 
   private curUser = localStorage.getItem('user');
 
@@ -34,6 +36,11 @@ export class ImageComponent implements OnInit, OnDestroy {
       group.comment = new FormControl('', Validators.required);
       group.type = new FormControl('new-comment');
       this.commentForm = new FormGroup(group);
+
+      let groupTwo: any = {};
+      groupTwo.viewer = new FormControl('', Validators.required);
+      groupTwo.type = new FormControl('add-viewer');
+      this.addViewerForm = new FormGroup(groupTwo);
   }
 
   public ngOnInit() {
@@ -87,6 +94,33 @@ export class ImageComponent implements OnInit, OnDestroy {
         );
   }
 
+  public addViewer() {
+      let body = {
+          image_id: this.imageInfo.id,
+          new_viewer: this.addViewerForm.controls['viewer'].value
+      };
+
+      this.webservice.addViewer(body)
+        .subscribe((data) => {
+            console.log('added viewer');
+            this.addViewerResult = "Successfully granted permission to user";
+
+            let groupTwo: any = {};
+            groupTwo.viewer = new FormControl('', Validators.required);
+            groupTwo.type = new FormControl('add-viewer');
+            this.addViewerForm = new FormGroup(groupTwo);
+        },
+        (error) => {
+            this.addViewerResult = "Unable to grant permission to user";
+            
+            let groupTwo: any = {};
+            groupTwo.viewer = new FormControl('', Validators.required);
+            groupTwo.type = new FormControl('add-viewer');
+            this.addViewerForm = new FormGroup(groupTwo);
+        }
+        );
+  }
+
   public createComment() {
       let body = {
         image_id: this.imageInfo.id,
@@ -95,7 +129,7 @@ export class ImageComponent implements OnInit, OnDestroy {
       this.webservice.createComment(body)
         .subscribe((data) => {
           this.refreshComments();
-          
+
           let group: any = {};
           group.image_id = new FormControl('', Validators.required);
           group.comment = new FormControl('', Validators.required);

@@ -210,26 +210,25 @@ def delete_image():
 @login_required
 def add_viewer():
     params = request.get_json()
-    filename = params.get('filename', None)
-    new_viewer = params.get('new-viewer', None)
+    image_id = params.get('image_id', None)
+    new_viewer = params.get('new_viewer', None)
 
-    if not filename or not new_viewer:
+    if not image_id or not new_viewer:
         return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
 
-    if not User.query.filter(User.username == new_viewer).first() or not Image.query.filter(Image.name == filename).first():
+    if not User.query.filter(User.username == new_viewer).first() or not Image.query.filter(Image.id == image_id).first():
         return jsonify({"msg": "Invalid user or filename"}), Status.HTTP_BAD_REQUEST
 
-    owner = User.query.filter(User.username == Image.query.filter(Image.name == filename).first().owner).first()
+    owner = User.query.filter(User.username == Image.query.filter(Image.id == image_id).first().owner).first()
+    image = Image.query.filter(Image.id == image_id).first()
 
     if new_viewer == owner.username:
         return jsonify({"msg": "Is owner"}), Status.HTTP_BAD_REQUEST
-    if Viewable.query.filter(Viewable.image_name == filename and Viewable.user_name == new_viewer).first():
+    if Viewable.query.filter(Viewable.image_name == image.name and Viewable.user_name == new_viewer).first():
         return jsonify({"msg": "Can already view"}), Status.HTTP_BAD_REQUEST
 
-    image_id = Image.query.filter(Image.name == filename).first().id
-
     db.session.add(Viewable(
-        image_name=filename, image_id=image_id, user_name=new_viewer
+        image_name=image.name, image_id=image_id, user_name=new_viewer
         ))
     db.session.commit()
 

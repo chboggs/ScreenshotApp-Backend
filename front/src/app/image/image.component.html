@@ -7,6 +7,16 @@
   <p> Uploaded on: {{imageInfo.timestamp}} </p>
   <p> Caption: {{imageInfo.caption}} </p>
   <button routerLink='/home' routerLinkActive="active"> Back </button>
+  <p> Grant permission for other user to view image: </p>
+  <form #registrationForm="ngForm" (ngSubmit)="addViewer()" [formGroup]="addViewerForm">
+    <div class="form-group">
+      <input id="viewer" type="text" required autofocus placeholder="Username" class="form-control" formControlName="viewer">
+    </div>
+    <div class="form-group">
+      <button type="submit">Add Viewer</button>
+    </div>
+  </form>
+  <p>{{addViewerResult}}</p>
 
   <div *ngIf="comments.length">
       <h4> Comments: </h4>

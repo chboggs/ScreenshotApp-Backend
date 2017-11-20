@@ -39,6 +39,10 @@ export class WebService {
       return this.authService.postResource(body, '/api/add-comment');
   }
 
+  public addViewer(body: object) {
+      return this.authService.postResource(body, '/api/add-viewer')
+  }
+
   public isAuthenticated() {
     if (!this.authService.isAuthenticated()) {
       this.authService.clearUserDataAndRedirect();
