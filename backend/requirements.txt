@@ -5,3 +5,4 @@ Flask-Login==0.4.0
 Flask-SQLAlchemy==2.2
 git+https://github.com/ansrivas/pylogging.git
 flask-jwt-simple[asymmetric_crypto]
+gunicorn==19.7.1
