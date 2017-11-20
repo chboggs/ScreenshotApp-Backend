@@ -10,7 +10,9 @@ import { jsonHeader } from '../utils';
 export class AuthenticationService {
 
   private curUser = '';
-  constructor(private http: Http, private router: Router) { }
+  constructor(private http: Http, private router: Router) {
+      this.prefix = "https://screenshot-tool-server.herokuapp.com";
+  }
 
   public isAuthenticated() {
     return localStorage.getItem('user');
@@ -26,7 +28,7 @@ export class AuthenticationService {
    *
    */
   public login(body: object) {
-    return this.http.post('/api/login', body)
+    return this.http.post(this.prefix + '/api/login', body)
       .map(this.handleLogin, { curUser: body['username'] })
       .catch(this.handleError);
   }
@@ -45,7 +47,7 @@ export class AuthenticationService {
    */
   public logout() {
     if (this.isAuthenticated()) {
-      this.postResource('', '/api/logout');
+      this.postResource('', this.prefix + '/api/logout');
       this.clearUserDataAndRedirect();
     } else {
       this.clearUserDataAndRedirect();
@@ -64,8 +66,8 @@ export class AuthenticationService {
     // postHeader.append('Content-Type', 'application/json');
     // let options = new RequestOptions({ headers: postHeader });
     // return this.http.post(url, body, options);
-    console.log(url);
-    return this.http.post(url, body);
+    console.log(this.prefix + url);
+    return this.http.post(this.prefix + url, body);
   }
 
   /**
@@ -75,7 +77,7 @@ export class AuthenticationService {
     // let token = localStorage.getItem('token');
     // let getHeader = new Headers({ Authorization: 'Bearer ' + token });
     // let options = new RequestOptions({ headers: getHeader });
-    return this.http.get(url);
+    return this.http.get(this.prefix + url);
   }
 
   private handleError(error: any) {
