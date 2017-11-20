@@ -50,7 +50,6 @@ def test():
     return "Hello"
 
 @app.route('/api/logout', methods=['POST'])
-@login_required
 def logout():
     logout_user()
     return jsonify({"msg": "Logout successful"}), Status.HTTP_OK_BASIC
@@ -107,7 +106,6 @@ def new_user():
     return jsonify({"msg": "Successfully created user"}), Status.HTTP_OK_BASIC
 
 @app.route('/api/new-image', methods=['POST'])
-@login_required
 def new_image():
     if 'image' not in request.files:
         return jsonify({"msg": "Missing image"}), Status.HTTP_BAD_REQUEST
@@ -170,7 +168,6 @@ def new_image_hololens():
     return jsonify({"msg": "Successfully added image"}), Status.HTTP_OK_BASIC
 
 @app.route('/api/delete-image', methods=['DELETE'])
-@login_required
 def delete_image():
 
     params = request.get_json()
@@ -211,7 +208,6 @@ def delete_image():
 
 
 @app.route('/api/add-viewer', methods=['POST'])
-@login_required
 def add_viewer():
     params = request.get_json()
     image_id = params.get('image_id', None)
@@ -251,7 +247,6 @@ def add_viewer():
 
 
 @app.route('/api/delete-viewer', methods=['DELETE'])
-@login_required
 def delete_viewer():
     params = request.get_json()
     filename = params.get('filename', None)
@@ -278,7 +273,6 @@ def delete_viewer():
 
 
 @app.route('/api/get-image', methods=['GET'])
-@login_required
 def get_image():
     id = request.args.get('id')
 
@@ -298,7 +292,6 @@ def get_image():
     return send_file(os.path.join(image_dir, image.name), mimetype='image/gif'), Status.HTTP_OK_BASIC
 
 @app.route('/api/get-image-info', methods=['GET'])
-@login_required
 def get_image_info():
     id = request.args.get('id')
 
@@ -324,7 +317,6 @@ def get_image_info():
     }), Status.HTTP_OK_BASIC
 
 @app.route('/api/get-owned-images', methods=['GET'])
-@login_required
 def get_owned_images():
 
     if not Image.query.filter(Image.owner == current_user.username).first():
@@ -346,7 +338,6 @@ def get_owned_images():
 
 
 @app.route('/api/get-viewable-images', methods=['GET'])
-@login_required
 def get_viewable_images():
 
     if not Viewable.query.filter(Viewable.user_name == current_user.username).first():
@@ -374,7 +365,7 @@ def get_viewable_images():
 
 
 @app.route('/api/edit-caption', methods=['POST'])
-@login_required
+
 def edit_caption():
     params = request.get_json()
     filename = params.get('filename', None)
@@ -394,7 +385,7 @@ def edit_caption():
     return jsonify({"msg": "Successfully edited caption"}), Status.HTTP_OK_BASIC
 
 @app.route('/api/add-comment', methods=['POST'])
-@login_required
+
 def add_comment():
     params = request.get_json()
     image_id = params.get('image_id', None)
@@ -417,7 +408,6 @@ def add_comment():
     return jsonify({"msg": "Successfully added comment"}), Status.HTTP_OK_BASIC
 
 @app.route('/api/get-comments', methods=['GET'])
-@login_required
 def get_comments():
     image_id = request.args.get('image_id')
 
