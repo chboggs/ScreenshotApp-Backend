@@ -8,7 +8,7 @@
     <div *ngIf="ownedImages.length; else noneOwned">
       <ul>
         <li *ngFor="let image of ownedImages; let i=index">
-          <a routerLink="/image" routerLinkActive="active">{{image.name}}</a>
+          <a [routerLink]="['/image', image.id]" routerLinkActive="active">{{image.name}}</a>
           <p>{{image.caption}}</p>
         </li>
       </ul>
@@ -22,7 +22,7 @@
     <div *ngIf="viewableImages.length; else noViewable">
       <ul>
         <li *ngFor="let image of viewableImages; let i=index">
-          <a routerLink="/image" routerLinkActive="active">{{image.name}}</a>
+          <a routerLink="/image" [queryParams]="{id: image.id}" routerLinkActive="active">{{image.name}}</a>
           <p>{{image.caption}}<i>({{image.owner}})</i></p>
         </li>
       </ul>

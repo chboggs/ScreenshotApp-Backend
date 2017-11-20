@@ -15,6 +15,18 @@ export class WebService {
       return this.authService.getResource('/api/get-viewable-images');
   }
 
+  public getImage(id: number) {
+      return this.authService.getResource('/api/get-image?id=' + id);
+  }
+
+  public getImageInfo(id: number) {
+      return this.authService.getResource('/api/get-image-info?id=' + id);
+  }
+
+  public getComments(id: number) {
+      return this.authService.getResource('/api/get-comments?image_id=' + id);
+  }
+
   /**
    * Send request for a new user
    *

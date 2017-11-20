@@ -271,15 +271,44 @@ def get_image():
 
     if not id:
         return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
-    if not Image.query.filter(Image.id == id).first():
+
+    image = Image.query.filter(Image.id == id).first()
+
+    if not image:
         return jsonify({"msg": "Invalid image id"}), Status.HTTP_BAD_REQUEST
 
-    if not Image.query.filter(Image.id == id).first().owner == current_user.username and not Viewable.query.filter(Viewable.image_id == id and Viewable.user_name == current_user.username).first():
+    if not image.owner == current_user.username and not Viewable.query.filter(Viewable.image_id == id and Viewable.user_name == current_user.username).first():
         return jsonify({"msg": "Cannot view image"}), Status.HTTP_BAD_UNAUTHORIZED
 
     # Okay they can view the image
 
-    return send_file(os.path.join(image_dir, filename), mimetype='image/gif'), Status.HTTP_OK_BASIC
+    return send_file(os.path.join(image_dir, image.name), mimetype='image/gif'), Status.HTTP_OK_BASIC
+
+@app.route('/api/get-image-info', methods=['GET'])
+@login_required
+def get_image_info():
+    id = request.args.get('id')
+
+    if not id:
+        return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
+
+    image = Image.query.filter(Image.id == id).first()
+
+    if not image:
+        return jsonify({"msg": "Invalid image id"}), Status.HTTP_BAD_REQUEST
+
+    if not image.owner == current_user.username and not Viewable.query.filter(Viewable.image_id == id and Viewable.user_name == current_user.username).first():
+        return jsonify({"msg": "Cannot view image"}), Status.HTTP_BAD_UNAUTHORIZED
+
+    # Okay they can view the image
+
+    return jsonify({
+        "name": image.name,
+        "caption": image.caption,
+        "owner": image.owner,
+        "id": id,
+        "timestamp": image.timestamp
+    }), Status.HTTP_OK_BASIC
 
 @app.route('/api/get-owned-images', methods=['GET'])
 @login_required
@@ -384,7 +413,7 @@ def get_comments():
     if not Image.query.filter(Image.id == image_id).first():
         return jsonify({"msg": "Invalid image id"}), Status.HTTP_BAD_REQUEST
 
-    if not Image.query.filter(Image.image_id == image_id).first().owner == current_user.username and not Viewable.query.filter(Viewable.image_id == image_id and Viewable.user_name == current_user.username).first():
+    if not Image.query.filter(Image.id == image_id).first().owner == current_user.username and not Viewable.query.filter(Viewable.image_id == image_id and Viewable.user_name == current_user.username).first():
         return jsonify({"msg": "You do not have permissions for this image"}), Status.HTTP_BAD_UNAUTHORIZED
 
     image_comments = Comments.query.filter(Comments.parent_image == image_id).order_by(Comments.timestamp)

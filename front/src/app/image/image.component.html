@@ -1,1 +1,19 @@
 <navbar></navbar>
+
+<!-- Main Content -->
+<div class="container-fluid top">
+  <h3> Selected Image </h3>
+  <p> Uploaded by: {{imageInfo.owner}} </p>
+  <p> Uploaded at: {{imageInfo.timestamp}} </p>
+  <p> Caption: {{imageInfo.caption}} </p>
+  <button routerLink='/home' routerLinkActive="active"> Back </button>
+
+  <div *ngIf="comments.length">
+    <ul>
+      <li *ngFor="let comment of comments; let i=index">
+        <p>{{comment}}</p>
+      </li>
+    </ul>
+  </div>
+
+</div>

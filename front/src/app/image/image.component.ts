@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { NavbarComponent } from '../navbar';
 import { WebService } from '../webservices';
 import { ImageData } from '../imagedata';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'image',
@@ -14,71 +15,103 @@ import { ImageData } from '../imagedata';
 })
 export class ImageComponent implements OnInit, OnDestroy {
 
-  public ownedImages = [];
-  public viewableImages = [];
+  public imageInfo = new ImageData(-1, "", "", -1, "");
+  public comments = [];
   private curUser = localStorage.getItem('user');
-  constructor(private http: Http, private router: Router, private webservice: WebService) { }
+
+  constructor(
+      private http: Http,
+      private router: Router,
+      private webservice: WebService,
+      private route: ActivatedRoute
+  ) { }
 
   public ngOnInit() {
-    // this.webservice.isAuthenticated();
-    // this.getData();
+    this.webservice.isAuthenticated();
+
+    this.sub = this.route.params.subscribe(params => {
+        this.id = +params['id'];
+    });
+    this.getData();
   }
 
   public ngOnDestroy() {
     // Will clear when component is destroyed e.g. route is navigated away from.
+    this.sub.unsubscribe();
     console.log('destroyed');
-  }
-
-  public clear() {
-    // this.ownedImages = [];
-    // this.viewableImages = [];
   }
 
   /**
    * Fetch the data from the python-flask backend
    */
   public getData() {
-    // this.webservice.getOwnedImages()
+    // this.webservice.getImage(this.id)
     //   .subscribe(
-    //   (data) => this.handleOwnedImages(data),
+    //   (data) => this.handleImage(data),
     //   (err) => this.logError(err),
-    //   () => console.log('got owned images')
+    //   () => console.log('got image')
     //   );
-    //
-    // this.webservice.getViewableImages()
+
+    this.webservice.getImageInfo(this.id)
+      .subscribe(
+      (data) => this.handleImageInfo(data),
+      (err) => this.logError(err),
+      () => console.log('got image info')
+      );
+
+    // this.webservice.getComments(this.id)
     //   .subscribe(
-    //   (data) => this.handleViewableImages(data),
+    //   (data) => this.handleComments(data),
     //   (err) => this.logError(err),
-    //   () => console.log('got viewable images')
+    //   () => console.log('got comments')
     //   );
   }
 
-  private handleOwnedImages(data: Response) {
+  private handleImage(data: Response) {
     // if (data.status === 200) {
     //   let receivedData = data.json();
     //   this.ownedImages = receivedData['images'];
     // } else {
     //   this.ownedImages = [];
     // }
-    // console.log(data.json());
+    console.log('image');
+    console.log(data._body);
   }
-  private handleViewableImages(data: Response) {
+
+  private handleImageInfo(data: Response) {
+    if (data.status === 200) {
+      let receivedData = data.json();
+      console.log("data");
+      console.log(receivedData);
+      console.log("caption");
+      console.log(receivedData['caption']);
+      this.imageInfo.name = receivedData['name'];
+      this.imageInfo.caption = receivedData['caption'];
+      this.imageInfo.owner = receivedData['owner'];
+      this.imageInfo.id = receivedData['id'];
+      this.imageInfo.timestamp = receivedData['timestamp'];
+    }
+    console.log(this.imageInfo);
+  }
+
+  private handleComments(data: Response) {
     // if (data.status === 200) {
     //   let receivedData = data.json();
     //   this.viewableImages = receivedData['images'];
     // } else {
     //   this.viewableImages = [];
     // }
-    // console.log(data.json());
+    console.log('comments');
+    console.log(data);
   }
 
   private logError(err: Response) {
-    // console.log('There was an error: ' + err.status);
-    // if (err.status === 0) {
-    //   console.error('Seems server is down');
-    // }
-    // if (err.status === 401) {
-    //   this.router.navigate(['/sessionexpired']);
-    // }
+    console.log('There was an error: ' + err.status);
+    if (err.status === 0) {
+      console.error('Seems server is down');
+    }
+    if (err.status === 401) {
+      this.router.navigate(['/sessionexpired']);
+    }
   }
 }
