@@ -1,3 +1,6 @@
 app.pyc
 __pycache__/
 controllers/__pycache__/
+__pycache__/factory.cpython-36.pyc
+__pycache__/http_codes.cpython-36.pyc
+__pycache__/models.cpython-36.pyc
