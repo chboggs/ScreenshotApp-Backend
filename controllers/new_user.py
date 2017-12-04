@@ -1,11 +1,16 @@
+import os, sys, inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+
 from flask import *
-from ..models import User
-from ..factory import db
-from ..http_codes import *
+from models import User
+from factory import db
+from http_codes import *
 
-new_user = Blueprint('new_user', __name__, template_folder='templates')
+new_user_blueprint = Blueprint('new_user_blueprint', __name__, template_folder='templates')
 
-@user.route('/new-user', methods=['POST'])
+@new_user_blueprint.route('/new-user', methods=['POST'])
 def new_user():
     params = request.get_json()
     username = params.get('username', None)
