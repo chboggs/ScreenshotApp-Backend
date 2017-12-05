@@ -20,6 +20,7 @@ app.register_blueprint(controllers.api_image_blueprint)
 app.register_blueprint(controllers.details_blueprint)
 app.register_blueprint(controllers.login_blueprint)
 app.register_blueprint(controllers.logout_blueprint)
+app.register_blueprint(controllers.main_blueprint)
 app.register_blueprint(controllers.new_user_blueprint)
 app.register_blueprint(controllers.overview_blueprint)
 
@@ -36,10 +37,6 @@ def init():
     """Initialize the application with defaults."""
     db.create_all()
     # db.drop_all()
-
-@app.route('/', methods=['GET','POST'])
-def main():
-    return render_template("index.html"), Status.HTTP_OK_BASIC
 
 if __name__ == '__main__':
     create_image_store()

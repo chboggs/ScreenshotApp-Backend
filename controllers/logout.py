@@ -5,4 +5,4 @@ logout_blueprint = Blueprint('logout_blueprint', __name__, template_folder='temp
 @logout_blueprint.route('/logout', methods=['POST'])
 def logout_user():
 	session.pop('username', None)
-	return redirect(url_for('login.login_user'))
+	return redirect(url_for('login_blueprint.login_user'))

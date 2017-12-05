@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+    <meta name="author" content="Alex Wasserman, Chris Boggs, Christoph Bartschat, Cody Nagel">
+    <title>Screenshot Tool</title>
+</head>
+<body>
+  <header>
+  	{% if session %}
+	    <h4>Logged in as {{firstname}} {{lastname}}</h4>
+    	<form method="post" action="{{ url_for('logout.logout_user') }}"><input type="submit" value="Logout" id="nav_logout"></input></form><br>
+    {% endif  %}
+  </header>
+  <div class="center">
+    {% block content %}{% endblock %}
+  </div>
+  <footer>
+  </footer>
+</body>
+
+</html>

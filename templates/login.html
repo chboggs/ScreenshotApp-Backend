@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Login To Existing Account</h1>
+    {% if error %}
+        {% for message in problem %}
+            <p class="error">{{message}}</p>
+        {% endfor %}
+    {% endif %}
+    <form method="post" action="{{ url_for('login_blueprint.login_user') }}">
+        Username:<br>
+        <input id="login_username_input" type="text" name="username"><br>
+        Password:<br>
+        <input id="login_password_input" type="password" name="password"><br><br>
+        <input id="login_submit" type="submit" value="Login">
+    </form>
+{% endblock %}
