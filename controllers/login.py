@@ -13,7 +13,7 @@ login_blueprint = Blueprint('login_blueprint', __name__, template_folder='templa
 @login_blueprint.route('/login', methods=['POST', 'GET'])
 def login_user():
     if 'username' in session:
-        return redirect(url_for('overview_blueprint.account_overview')), Status.HTTP_OK_BASIC
+        return redirect(url_for('overview_blueprint.user_overview')), Status.HTTP_OK_BASIC
 
     if request.method == 'GET':
         options = { "error": False }
@@ -55,4 +55,4 @@ def login_user():
             return render_template("login.html", **options), Status.HTTP_BAD_UNAUTHORIZED
 
         session['username'] = username
-        return redirect(url_for('overview_blueprint.account_overview')), Status.HTTP_OK_BASIC
+        return redirect(url_for('overview_blueprint.user_overview')), Status.HTTP_OK_BASIC

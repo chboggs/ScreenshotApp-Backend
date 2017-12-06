@@ -9,3 +9,7 @@ from factory import db
 from http_codes import *
 
 details_blueprint = Blueprint('details_blueprint', __name__, template_folder='templates')
+
+@details_blueprint.route('/details', methods=['GET'])
+def image_details():
+    print("Got to details page")

@@ -1,23 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Images for {{ name }}</h1>
+    <h1>Images for {{ user.first_name }}</h1>
     <p class="important">
       Select an image to view
     </p>
+
     <h3>Owned Images</h3>
+    {% if owned %}
 	<table>
-		{% for image in ownedImages %}
+		{% for image in owned_images %}
 			<tr>
-				<td></td>
+				<td><a href="{{url_for('details_blueprint.image_details', image_id=image.id)}}">{{image.name}}</a>
+                    <br>Caption: {{image.caption}}</td>
 			</tr>
 		{% endfor %}
 	</table>
+    {% else %}
+    <p> No owned images </p>
+    {% endif %}
+
     <h3>Viewable Images</h3>
+    {% if viewable %}
     <table>
-		{% for image in viewableImages %}
+		{% for image in viewable_images %}
 			<tr>
-				<td></td>
+                <td><a href="{{url_for('details_blueprint.image_details', image_id=image.id)}}">{{image.name}}</a>
+                    Caption: {{image.caption}}</td>
 			</tr>
 		{% endfor %}
 	</table>
+    {% else %}
+    <p> No viewable images </p>
+    {% endif %}
+
 {% endblock %}
