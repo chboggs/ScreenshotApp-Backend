@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+    <p class="center">
+      {{message}}
+    </p>
+    <a href="{{url_for('overview_blueprint.user_overview')}}">Return to overview page</a>
+{% endblock %}

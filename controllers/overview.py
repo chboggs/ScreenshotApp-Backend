@@ -16,6 +16,10 @@ def user_overview():
         return redirect(url_for('login_blueprint.login_user'))
 
     username = session['username']
+    user = User.query.filter(User.username == username).first()
+
+    if not user:
+        return redirect(url_for('login_blueprint.login_user'))
 
     owned_images = Image.query.filter(Image.owner == username).all()
     viewables = Viewable.query.filter(Viewable.user_name == username).all()
@@ -23,8 +27,6 @@ def user_overview():
 
     for viewable in viewables:
         viewable_images.append(Image.query.filter(Image.name == viewable.image_name).first())
-
-    user = User.query.filter(User.username == username).first()
 
     options = {
         "owned": len(owned_images) != 0,

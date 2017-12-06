@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Image {{ image.name }}</h1>
+    <p>Uploaded by: {{ image.owner }}</p>
+    <p>Uploaded on: {{ image.timestamp }}</p>
+    <img src="..{{image.path_to_image}}" height=500 width=500>
+    <p>Caption: {{ image.caption }}</p>
+    <form method="get" action="{{ url_for('overview_blueprint.user_overview') }}">
+        <input type="submit" value="Back" />
+    </form>
+
+    {% if owner %}
+    <p>{{ add_viewer_message }}</p>
+    <form method="post" action="{{ url_for('details_blueprint.image_details', action=0) }}">
+        <b>Grant permission for other user to view this image</b><br>
+        Enter username to whom permission will be granted:<br>
+        <input id="add_viewer_input" type="text" name="viewer"><br>
+        <input id="add_viewer_submit" type="submit" value="Add Viewer">
+    </form>
+    {% endif %}
+
+    <p>Comments:</p>
+    <table>
+		{% for comment in comments %}
+			<tr>
+				<td>{{ comment.comment_string }}<br>
+                    By: {{ comment.user_name }}<br>
+                    Posted: {{ comment.timestamp }}</td>
+			</tr>
+		{% endfor %}
+	</table>
+    <form method="post" action="{{ url_for('details_blueprint.image_details', action=1) }}">
+        Add Comment:<br>
+        <input id="add_comment_input" type="text" name="comment"><br>
+        <input id="add_comment_submit" type="submit" value="Add Comment">
+    </form>
+{% endblock %}

@@ -7,7 +7,7 @@ from flask import *
 from models import Image, Comments, User
 from factory import db
 from http_codes import *
-from factory import image_dir
+from factory import relative_image_dir
 
 api_image_blueprint = Blueprint('api_image_blueprint', __name__, template_folder='templates')
 
@@ -36,7 +36,7 @@ def new_image_hololens():
     if not name or name == '' or len(name) > 50:
         return jsonify({"msg": "File must have a valid name"}), Status.HTTP_BAD_REQUEST
 
-    path_to_image = os.path.join(image_dir, name)
+    path_to_image = relative_image_dir + '/' + name
     fw = open(path_to_image, 'wb')
     fw.write(new_im.read())
     fw.close()

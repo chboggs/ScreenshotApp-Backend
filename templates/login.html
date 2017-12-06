@@ -13,5 +13,7 @@
         <input id="login_password_input" type="password" name="password"><br><br>
         <input id="login_submit" type="submit" value="Login">
     </form>
-    <a href="{{ url_for('new_user_blueprint.new_user') }}">Create Account</a>
+    <form method="get" action="{{ url_for('new_user_blueprint.new_user') }}">
+        <input type="submit" value="Create Account" />
+    </form>
 {% endblock %}

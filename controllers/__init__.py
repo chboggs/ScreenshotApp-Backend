@@ -1,4 +1,3 @@
-from .add_viewer import *
 from .api_image import *
 from .details import *
 from .login import *
