@@ -12,4 +12,8 @@ overview_blueprint = Blueprint('overview_blueprint', __name__, template_folder='
 
 @overview_blueprint.route('/overview', methods=['GET'])
 def account_overview():
+    if 'username' not in session:
+        return redirect(url_for('login_blueprint.login_user'))
+
     user = session['username']
+    return render_template('overview.html')

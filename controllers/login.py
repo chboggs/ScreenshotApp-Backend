@@ -1,4 +1,4 @@
-import os, sys, inspect
+import os, sys, inspect, hashlib
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
@@ -12,42 +12,34 @@ login_blueprint = Blueprint('login_blueprint', __name__, template_folder='templa
 
 @login_blueprint.route('/login', methods=['POST', 'GET'])
 def login_user():
+    if 'username' in session:
+        return redirect(url_for('overview_blueprint.account_overview')), Status.HTTP_OK_BASIC
+
     if request.method == 'GET':
-        if 'username' in session:
-            return redirect(url_for('overview_blueprint.account_overview'))
-        else:
-            options = {
-                "error": False
-            }
-            return render_template('login.html', **options)
+        options = { "error": False }
+        return render_template('login.html', **options), Status.HTTP_OK_BASIC
     else:
         username = request.form['username']
         password = request.form['password']
+
         if username == "":
             if password == "":
                 options = {
                     "error": True,
-                    "problem": {"Username may not be left blank", "Password may not be left blank"}
+                    "problem": { "Username may not be left blank", "Password may not be left blank" }
                 }
-                return render_template("login.html", **options)
+                return render_template("login.html", **options), Status.HTTP_BAD_REQUEST
             options = {
                 "error": True,
-                "problem": {"Username may not be left blank"}
+                "problem": { "Username may not be left blank" }
             }
-            return render_template("login.html", **options)
+            return render_template("login.html", **options), Status.HTTP_BAD_REQUEST
         if password == "":
             options = {
                 "error": True,
-                "problem": {"Password may not be left blank"}
+                "problem": { "Password may not be left blank" }
             }
-            return render_template("login.html", **options)
-
-        print('Username received: ' + username)
-        print('Password received: ' + password)
-
-        if not username or not password:
-            # TODO
-            pass
+            return render_template("login.html", **options), Status.HTTP_BAD_REQUEST
 
         m = hashlib.new('sha512')
         m.update(password.encode('utf-8'))
@@ -56,9 +48,11 @@ def login_user():
         registered_user = User.query.filter(User.username == username, User.password == password).first()
 
         if not registered_user:
-            # TODO
-            pass
+            options = {
+                "error": True,
+                "problem": { "Invalid login" }
+            }
+            return render_template("login.html", **options), Status.HTTP_BAD_UNAUTHORIZED
 
-        # TODO
-        # session['username'] = username
-        # return redirect(url_for('overview_blueprint.account_overview'))
+        session['username'] = username
+        return redirect(url_for('overview_blueprint.account_overview')), Status.HTTP_OK_BASIC

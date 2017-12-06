@@ -8,7 +8,7 @@
   <header>
   	{% if session %}
 	    <h4>Logged in as {{firstname}} {{lastname}}</h4>
-    	<form method="post" action="{{ url_for('logout.logout_user') }}"><input type="submit" value="Logout" id="nav_logout"></input></form><br>
+    	<form method="post" action="{{ url_for('logout_blueprint.logout_user') }}"><input type="submit" value="Logout" id="nav_logout"></input></form><br>
     {% endif  %}
   </header>
   <div class="center">

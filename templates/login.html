@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Login To Existing Account</h1>
+    <h1>Login</h1>
     {% if error %}
         {% for message in problem %}
             <p class="error">{{message}}</p>
@@ -13,4 +13,5 @@
         <input id="login_password_input" type="password" name="password"><br><br>
         <input id="login_submit" type="submit" value="Login">
     </form>
+    <a href="{{ url_for('new_user_blueprint.new_user') }}">Create Account</a>
 {% endblock %}

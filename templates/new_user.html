@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Create User</h1>
+    {% if error %}
+        {% for message in problem %}
+            <p class="error">{{message}}</p>
+        {% endfor %}
+    {% endif %}
+    <form method="post" action="{{ url_for('new_user_blueprint.new_user') }}">
+        First Name:<br>
+        <input id="create_first_name_input" type="text" name="first_name"><br>
+        Last Name:<br>
+        <input id="create_last_name_input" type="text" name="last_name"><br>
+        Username:<br>
+        <input id="create_username_input" type="text" name="username"><br>
+        Password:<br>
+        <input id="create_password_input" type="password" name="password"><br>
+        Email:<br>
+        <input id="create_email_input" type="text" name="email"><br><br>
+        <input id="create_submit" type="submit" value="Create Account">
+    </form>
+{% endblock %}

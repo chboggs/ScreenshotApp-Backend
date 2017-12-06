@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Images for {{ name }}</h1>
+    <p class="important">
+      Select an image to view
+    </p>
+    <h3>Owned Images</h3>
+	<table>
+		{% for image in ownedImages %}
+			<tr>
+				<td></td>
+			</tr>
+		{% endfor %}
+	</table>
+    <h3>Viewable Images</h3>
+    <table>
+		{% for image in viewableImages %}
+			<tr>
+				<td></td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}
