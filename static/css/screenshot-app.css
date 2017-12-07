@@ -1,0 +1,19 @@
+nav .brand-logo {
+	padding-left: 1em;
+}
+nav ul li{
+	padding-right: 1em;
+}
+nav {
+	/*background-color:#00ced1;*/
+	background-color:#00bfff;
+	height: 63px;
+	font-size: 20px;
+}
+
+.btn, .btn-large {
+    color: white;
+    background-color: #1e98c1;
+    width: 100px;
+    cursor: pointer;
+}
