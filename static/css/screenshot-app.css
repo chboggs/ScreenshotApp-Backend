@@ -17,3 +17,7 @@ nav {
     width: 100px;
     cursor: pointer;
 }
+
+.row .col.s12 {
+    max-width: 400px;
+}

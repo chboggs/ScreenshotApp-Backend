@@ -14,14 +14,13 @@ login_blueprint = Blueprint('login_blueprint', __name__, template_folder='templa
 def login_user():
     if 'username' in session:
         return redirect(url_for('overview_blueprint.user_overview'))
-
     if request.method == 'GET':
         options = { "error": False }
         return render_template('login.html', **options)
     else:
+
         username = request.form['username']
         password = request.form['password']
-
         if username == "":
             if password == "":
                 options = {
