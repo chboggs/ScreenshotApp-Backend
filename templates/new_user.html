@@ -1,22 +1,57 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Create User</h1>
-    {% if error %}
+    <div class="col s12 z-depth-4 card-panel">
+      <div class="row margin">
+          <div class="input-field col s12">
+            <h1>Create User</h1>
+          </div>
+      </div>
+      {% if error %}
         {% for message in problem %}
-            <p class="error">{{message}}</p>
+          <p class="error">{{message}}</p>
         {% endfor %}
-    {% endif %}
-    <form method="post" action="{{ url_for('new_user_blueprint.new_user') }}">
-        First Name:<br>
-        <input id="create_first_name_input" type="text" name="first_name"><br>
-        Last Name:<br>
-        <input id="create_last_name_input" type="text" name="last_name"><br>
-        Username:<br>
-        <input id="create_username_input" type="text" name="username"><br>
-        Password:<br>
-        <input id="create_password_input" type="password" name="password"><br>
-        Email:<br>
-        <input id="create_email_input" type="text" name="email"><br><br>
-        <input id="create_submit" type="submit" value="Create Account">
-    </form>
+      {% endif %}
+      <form method="post" action="{{ url_for('new_user_blueprint.new_user') }}">
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-social-person-outline prefix"></i>
+            <input id="create_first_name_input" type="text" name="first_name">
+            <label for="create_first_name_input" class="center-align">First Name</label>
+          </div>
+        </div>
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-social-person-outline prefix"></i>
+            <input id="create_last_name_input" type="text" name="last_name">
+            <label for="create_last_name_input" class="center-align">Last Name</label>
+          </div>
+        </div>
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-social-person-outline prefix"></i>
+            <input id="create_username_input" type="text" name="username">
+            <label for="create_username_input" class="center-align">Username</label>
+          </div>
+        </div>
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-action-lock-outline prefix"></i>
+            <input id="create_password_input" type="password" name="password">
+            <label for="create_password_input">Password</label>
+          </div>
+        </div>
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-action-lock-outline prefix"></i>
+            <input id="create_email_input" type="text" name="email">
+            <label for="create_email_input">Email</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <button class="btn waves-effect waves-light" id="create_submit" type="submit" name="action">Create Account</button>
+          </div>
+        </div>
+      </form>
+    </div>
 {% endblock %}

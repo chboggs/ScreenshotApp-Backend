@@ -21,3 +21,8 @@ nav {
 .row .col.s12 {
     max-width: 400px;
 }
+
+h1 {
+	color: #1e98c1;
+	font-size: 50px;
+}
