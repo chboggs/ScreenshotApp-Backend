@@ -25,7 +25,7 @@
 		{% for image in viewable_images %}
 			<tr>
                 <td><a href="{{url_for('details_blueprint.image_details', image_id=image.id)}}">{{image.name}}</a>
-                    Caption: {{image.caption}}</td>
+                    <br>Caption: {{image.caption}}</td>
 			</tr>
 		{% endfor %}
 	</table>

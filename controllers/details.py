@@ -10,8 +10,56 @@ from http_codes import *
 
 details_blueprint = Blueprint('details_blueprint', __name__, template_folder='templates')
 
-@details_blueprint.route('/details', methods=['GET'])
-def image_details():
+def add_viewer(request, user, image):
+    if image.owner != user.username:
+        options = {
+            'user': user,
+            'message': 'You do not own this image'
+        }
+        return render_template('error.html', **options), Status.HTTP_BAD_FORBIDDEN
+
+    new_viewer = request.form['new_viewer']
+    comments = Comments.query.filter(Comments.parent_image == image.name).all()
+    owner = True
+
+    if new_viewer == image.owner:
+        options = {
+            'user': user,
+            'image': image,
+            'comments': comments,
+            'owner': owner,
+            'add_viewer_message': "User " + new_viewer + " is the owner of this image"
+        }
+        return render_template('details.html', **options), Status.HTTP_BAD_REQUEST
+
+    if Viewable.query.filter(Viewable.image_name == image.name and Viewable.user_name == new_viewer).first():
+        options = {
+            'user': user,
+            'image': image,
+            'comments': comments,
+            'owner': owner,
+            'add_viewer_message': "User " + new_viewer + " already has permission to view this image"
+        }
+        return render_template('details.html', **options), Status.HTTP_BAD_REQUEST
+
+    db.session.add(Viewable(
+        image_name=image.name, image_id=image.id, user_name=new_viewer
+        ))
+    db.session.commit()
+
+    options = {
+        'user': user,
+        'image': image,
+        'comments': comments,
+        'owner': owner,
+        'add_viewer_message': "Succcessfully granted permission to " + new_viewer
+    }
+    return render_template('details.html', **options), Status.HTTP_OK_BASIC
+
+def add_comment(request, user, image):
+    pass
+
+def image_details_get(request, session):
     if 'username' not in session:
         return redirect(url_for('login_blueprint.login_user'))
 
@@ -25,12 +73,19 @@ def image_details():
     if 'image_id' not in query_params:
         options = {
             'user': user,
-            'message': 'Image not found'
+            'message': 'image_id query parameter not specified'
         }
-        return render_template('error.html', **options), Status.HTTP_BAD_NOTFOUND
+        return render_template('error.html', **options), Status.HTTP_BAD_REQUEST
 
     image_id = query_params['image_id'][0]
     image = Image.query.filter(Image.id == image_id).first()
+
+    if not image:
+        options = {
+            'user': user,
+            'message': 'Image not found'
+        }
+        return render_template('error.html', **options), Status.HTTP_BAD_NOTFOUND
 
     owner = True
 
@@ -54,3 +109,65 @@ def image_details():
         'add_viewer_message': ""
     }
     return render_template('details.html', **options), Status.HTTP_OK_BASIC
+
+def image_details_post(request, session):
+    if 'username' not in session:
+        return redirect(url_for('login_blueprint.login_user'))
+
+    username = session['username']
+    user = User.query.filter(User.username == username).first()
+
+    if not user:
+        return redirect(url_for('login_blueprint.login_user'))
+
+    query_params = dict(request.args)
+    if 'image_id' not in query_params:
+        options = {
+            'user': user,
+            'message': 'image_id query parameter not specified'
+        }
+        return render_template('error.html', **options), Status.HTTP_BAD_NOTFOUND
+
+    if 'action' not in query_params:
+        options = {
+            'user': user,
+            'message': 'action query parameter not specified'
+        }
+        return render_template('error.html', **options), Status.HTTP_BAD_REQUEST
+
+    image_id = query_params['image_id'][0]
+    image = Image.query.filter(Image.id == image_id).first()
+
+    if not image:
+        options = {
+            'user': user,
+            'message': 'Image not found'
+        }
+        return render_template('error.html', **options), Status.HTTP_BAD_NOTFOUND
+
+    action = int(query_params['action'][0])
+
+    if action != 0 and action != 1:
+        options = {
+            'user': user,
+            'message': 'Invalid action specified'
+        }
+        return render_template('error.html', **options), Status.HTTP_BAD_REQUEST
+
+    if action == 0:
+        return add_viewer(request, user, image)
+    elif action == 1:
+        return add_comment(request, user, image)
+    else:
+        options = {
+            'user': user,
+            'message': 'Action was not 0 or 1. It should never get here'
+        }
+        return render_template('error.html', **options), 500
+
+@details_blueprint.route('/details', methods=['GET', 'POST'])
+def image_details():
+    if request.method == 'GET':
+        return image_details_get(request, session)
+    else:
+        return image_details_post(request, session)

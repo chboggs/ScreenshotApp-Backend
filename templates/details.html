@@ -11,10 +11,10 @@
 
     {% if owner %}
     <p>{{ add_viewer_message }}</p>
-    <form method="post" action="{{ url_for('details_blueprint.image_details', action=0) }}">
+    <form method="post" action="{{ url_for('details_blueprint.image_details', image_id=image.id, action=0) }}">
         <b>Grant permission for other user to view this image</b><br>
         Enter username to whom permission will be granted:<br>
-        <input id="add_viewer_input" type="text" name="viewer"><br>
+        <input id="add_viewer_input" type="text" name="new_viewer"><br>
         <input id="add_viewer_submit" type="submit" value="Add Viewer">
     </form>
     {% endif %}
@@ -29,7 +29,7 @@
 			</tr>
 		{% endfor %}
 	</table>
-    <form method="post" action="{{ url_for('details_blueprint.image_details', action=1) }}">
+    <form method="post" action="{{ url_for('details_blueprint.image_details', image_id=image.id, action=1) }}">
         Add Comment:<br>
         <input id="add_comment_input" type="text" name="comment"><br>
         <input id="add_comment_submit" type="submit" value="Add Comment">
