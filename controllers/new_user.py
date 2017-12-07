@@ -44,4 +44,4 @@ def new_user():
             ))
         db.session.commit()
 
-        return redirect(url_for('login_blueprint.login_user')), Status.HTTP_OK_CREATED
+        return redirect(url_for('login_blueprint.login_user'))
