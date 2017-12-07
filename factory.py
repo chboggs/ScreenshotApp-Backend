@@ -11,4 +11,3 @@ db.init_app(app)
 
 cur_dir = os.getcwd()
 image_dir = os.path.join(cur_dir, 'images')
-relative_image_dir = "/images"
