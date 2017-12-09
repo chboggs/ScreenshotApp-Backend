@@ -15,6 +15,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 import controllers
 
+app.register_blueprint(controllers.api_details_blueprint)
 app.register_blueprint(controllers.api_image_blueprint)
 app.register_blueprint(controllers.details_blueprint)
 app.register_blueprint(controllers.login_blueprint)

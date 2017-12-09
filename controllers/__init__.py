@@ -1,3 +1,4 @@
+from .api_details import *
 from .api_image import *
 from .details import *
 from .login import *
