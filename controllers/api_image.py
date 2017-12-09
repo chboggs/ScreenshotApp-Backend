@@ -47,3 +47,31 @@ def new_image_hololens():
     db.session.commit()
 
     return jsonify({"msg": "Successfully added image"}), Status.HTTP_OK_BASIC
+
+@api_image_blueprint.route('/api/get-image', methods=['GET'])
+def get_image():
+    if 'username' not in session:
+        return jsonify({"msg": "Must be authenticated"}), Status.HTTP_BAD_FORBIDDEN
+
+    username = session['username']
+    user = User.query.filter(User.username == username).first()
+
+    if not user:
+        return jsonify({"msg": "Must be authenticated"}), Status.HTTP_BAD_FORBIDDEN
+
+    id = request.args.get('id')
+
+    if not id:
+        return jsonify({"msg": "Missing required parameter"}), Status.HTTP_BAD_REQUEST
+
+    image = Image.query.filter(Image.id == id).first()
+
+    if not image:
+        return jsonify({"msg": "Invalid image id"}), Status.HTTP_BAD_REQUEST
+
+    if not image.owner == username and not Viewable.query.filter(Viewable.image_id == id and Viewable.user_name == username).first():
+        return jsonify({"msg": "Cannot view image"}), Status.HTTP_BAD_UNAUTHORIZED
+
+    # Okay they can view the image
+
+    return send_file(os.path.join(image_dir, image.name), mimetype='image/gif'), Status.HTTP_OK_BASIC

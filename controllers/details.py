@@ -22,12 +22,16 @@ def add_viewer(request, user, image):
     comments = Comments.query.filter(Comments.parent_image == image.id).order_by(Comments.timestamp)
     owner = True
 
+    port = str(os.environ.get('$PORT', 8080))
+    image_route = "http://0.0.0.0:" + port + "/api/get-image?id=" + str(image.id)
+
     if new_viewer == image.owner:
         options = {
             'user': user,
             'image': image,
             'comments': comments,
             'owner': owner,
+            'image_route': image_route,
             'add_viewer_message': "User " + new_viewer + " is the owner of this image"
         }
         return render_template('details.html', **options), Status.HTTP_BAD_REQUEST
@@ -38,6 +42,7 @@ def add_viewer(request, user, image):
             'image': image,
             'comments': comments,
             'owner': owner,
+            'image_route': image_route,
             'add_viewer_message': "User " + new_viewer + " already has permission to view this image"
         }
         return render_template('details.html', **options), Status.HTTP_BAD_REQUEST
@@ -52,6 +57,7 @@ def add_viewer(request, user, image):
         'image': image,
         'comments': comments,
         'owner': owner,
+        'image_route': image_route,
         'add_viewer_message': "Succcessfully granted permission to " + new_viewer
     }
     return render_template('details.html', **options), Status.HTTP_OK_BASIC
@@ -61,7 +67,10 @@ def add_comment(request, user, image):
     if image.owner != user.username:
         owner = False
 
-    new_comment = request.form['comment']\
+    port = str(os.environ.get('$PORT', 8080))
+    image_route = "http://0.0.0.0:" + port + "/api/get-image?id=" + str(image.id)
+
+    new_comment = request.form['comment']
 
     db.session.add(Comments(
         parent_image=image.id, author=user.username, comment_string=new_comment
@@ -75,6 +84,7 @@ def add_comment(request, user, image):
         'image': image,
         'comments': comments,
         'owner': owner,
+        'image_route': image_route,
         'add_viewer_message': ""
     }
     return render_template('details.html', **options), Status.HTTP_OK_BASIC
@@ -121,11 +131,15 @@ def image_details_get(request, session):
 
     comments = Comments.query.filter(Comments.parent_image == image.id).order_by(Comments.timestamp)
 
+    port = str(os.environ.get('$PORT', 8080))
+    image_route = "http://0.0.0.0:" + port + "/api/get-image?id=" + str(image.id)
+
     options = {
         'user': user,
         'image': image,
         'comments': comments,
         'owner': owner,
+        'image_route': image_route,
         'add_viewer_message': ""
     }
     return render_template('details.html', **options), Status.HTTP_OK_BASIC
