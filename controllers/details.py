@@ -19,7 +19,7 @@ def add_viewer(request, user, image):
         return render_template('error.html', **options), Status.HTTP_BAD_FORBIDDEN
 
     new_viewer = request.form['new_viewer']
-    comments = Comments.query.filter(Comments.parent_image == image.name).all()
+    comments = Comments.query.filter(Comments.parent_image == image.id).order_by(Comments.timestamp)
     owner = True
 
     if new_viewer == image.owner:
@@ -57,7 +57,27 @@ def add_viewer(request, user, image):
     return render_template('details.html', **options), Status.HTTP_OK_BASIC
 
 def add_comment(request, user, image):
-    pass
+    owner = True
+    if image.owner != user.username:
+        owner = False
+
+    new_comment = request.form['comment']\
+
+    db.session.add(Comments(
+        parent_image=image.id, author=user.username, comment_string=new_comment
+        ))
+    db.session.commit()
+
+    comments = Comments.query.filter(Comments.parent_image == image.id).order_by(Comments.timestamp)
+
+    options = {
+        'user': user,
+        'image': image,
+        'comments': comments,
+        'owner': owner,
+        'add_viewer_message': ""
+    }
+    return render_template('details.html', **options), Status.HTTP_OK_BASIC
 
 def image_details_get(request, session):
     if 'username' not in session:
@@ -99,7 +119,7 @@ def image_details_get(request, session):
             }
             return render_template('error.html', **options), Status.HTTP_BAD_FORBIDDEN
 
-    comments = Comments.query.filter(Comments.parent_image == image.name).all()
+    comments = Comments.query.filter(Comments.parent_image == image.id).order_by(Comments.timestamp)
 
     options = {
         'user': user,

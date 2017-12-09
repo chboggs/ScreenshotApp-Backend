@@ -24,7 +24,7 @@
 		{% for comment in comments %}
 			<tr>
 				<td>{{ comment.comment_string }}<br>
-                    By: {{ comment.user_name }}<br>
+                    By: {{ comment.author }}<br>
                     Posted: {{ comment.timestamp }}</td>
 			</tr>
 		{% endfor %}

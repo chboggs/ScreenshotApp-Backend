@@ -38,7 +38,13 @@ class Comments(db.Model):
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
-        return '<Comment %r>' % self.author + self.parent_image
+        output = ""
+        output += ("id: " + str(self.id) + ", ")
+        output += ("parent_image: " + str(self.parent_image) + ", ")
+        output += ("author: " + self.author + ", ")
+        output += ("string: " + self.comment_string + ", ")
+        output += ("timestamp: " + str(self.timestamp))
+        return '<Comment %r>' % output
 
 
 class Viewable(db.Model):
