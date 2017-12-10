@@ -34,8 +34,11 @@ def add_viewer_api():
 
     if new_viewer == owner.username:
         return "User " + new_viewer + " owns this image", Status.HTTP_BAD_REQUEST
-    if Viewable.query.filter(Viewable.image_name == image.name and Viewable.user_name == new_viewer).first():
-        return "User " + new_viewer + " can already view this image", Status.HTTP_BAD_REQUEST
+
+    viewables = Viewable.query.all()
+    for viewable in viewables:
+        if viewable.image_id == image.id and viewable.user_name == new_viewer:
+            return "User " + new_viewer + " can already view this image", Status.HTTP_BAD_REQUEST
 
     db.session.add(Viewable(
         image_name=image.name, image_id=image_id, user_name=new_viewer
