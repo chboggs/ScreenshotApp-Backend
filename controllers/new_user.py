@@ -32,12 +32,19 @@ def new_user():
         m.update(password.encode('utf-8'))
         password = m.hexdigest()
 
-        if User.query.filter(User.username == username).first() or User.query.filter(User.email == email).first():
+        if User.query.filter(User.username == username).first():
             options = {
                 "error": True,
-                "problem": { "Account already exists" }
+                "problem": { "Account with specified username already exists" }
             }
-            return render_template("new_user.html", **options), Status.HTTP_BAD_UNAUTHORIZED
+            return render_template("new_user.html", **options), Status.HTTP_BAD_REQUEST
+
+        if User.query.filter(User.email == email).first():
+            options = {
+                "error": True,
+                "problem": { "Account with specified email already exists" }
+            }
+            return render_template("new_user.html", **options), Status.HTTP_BAD_REQUEST
 
         db.session.add(User(
             username=username, email=email, password=password, first_name=first_name, last_name=last_name
