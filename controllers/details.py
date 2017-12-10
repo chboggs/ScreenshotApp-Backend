@@ -23,7 +23,7 @@ def add_viewer(request, user, image):
     owner = True
 
     port = str(os.environ.get('$PORT', 8080))
-    image_route = "http://0.0.0.0:" + port + "/api/get-image?id=" + str(image.id)
+    image_route = "https://screenshot-tool-eecs498.herokuapp.com/api/get-image?id=" + str(image.id)
 
     if new_viewer == image.owner:
         options = {
