@@ -1,14 +1,8 @@
 function make_request(image_id_str, new_viewer_str) {
     var req = new XMLHttpRequest();
-    var body = {
-        "image_id": image_id_str,
-        "new_viewer": new_viewer_str
-    };
-    console.log(body);
+    var body = "image_id=" + image_id_str + "&new_viewer=" + new_viewer_str;
     var show_suggestions = function() {
         if(req.readyState == 4) {
-            console.log("response:");
-            console.log(req.response);
             document.getElementById("add_viewer_message").innerHTML = req.responseText;
         }
     }

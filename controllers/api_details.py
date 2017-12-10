@@ -12,13 +12,8 @@ api_details_blueprint = Blueprint('api_details_blueprint', __name__, template_fo
 
 @api_details_blueprint.route('/api/add_viewer', methods=['POST'])
 def add_viewer_api():
-    print("request")
-    params = request.get_json()
-    print(params)
-    image_id = params.get('image_id', None)
-    new_viewer = params.get('new_viewer', None)
-
-    query_params = dict(request.args)
+    image_id = request.form['image_id']
+    new_viewer = request.form['new_viewer']
 
     if not image_id or not new_viewer:
         return "Missing required parameter", Status.HTTP_BAD_REQUEST
