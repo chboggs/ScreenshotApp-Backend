@@ -46,7 +46,12 @@ def new_image_hololens():
         ))
     db.session.commit()
 
-    return jsonify({"msg": "Successfully added image"}), Status.HTTP_OK_BASIC
+    added_image = Image.query.filer(Image.name == name).first()
+    if not added_image:
+        return jsonify({"msg": "Error adding image to server"}), 500
+
+    return jsonify({ "msg": "Successfully added image",
+                     "url": "https://screenshot-tool-eecs498.herokuapp.com/details?image_id=" + str(added_image.id)}), Status.HTTP_OK_BASIC
 
 @api_image_blueprint.route('/api/get-image', methods=['GET'])
 def get_image():
