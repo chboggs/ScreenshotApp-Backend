@@ -11,6 +11,32 @@ from factory import image_dir
 
 api_image_blueprint = Blueprint('api_image_blueprint', __name__, template_folder='templates')
 
+def find_new_name(name):
+    index = len(name)
+    for i in range(len(name) - 1, -1, -1):
+        if name[i] == '.':
+            index = i
+            break
+
+    if index == len(name):
+        return name
+
+    first_half = name[:index] + '('
+    second_half = ')' + name[index:]
+
+    counter = 1
+    success = False
+    new_name = ""
+
+    while not success:
+        new_name = first_half + str(counter) + second_half
+        if not Image.query.filter(Image.name == new_name).first():
+            success = True
+        else:
+            counter = counter + 1
+
+    return new_name
+
 @api_image_blueprint.route('/api/new-image-hololens', methods=['POST'])
 def new_image_hololens():
     username = request.form['username']
@@ -25,6 +51,13 @@ def new_image_hololens():
     if "caption" in request.form:
         caption = request.form["caption"]
     name = new_im.filename
+
+    if Image.query.filter(Image.name == name).first():
+        new_name = find_new_name(name)
+        if new_name == name:
+            return jsonify({"msg": "Filename already exists, and server is unable to find a new name"}), 500
+        else:
+            name = new_name
 
     m = hashlib.new('sha512')
     m.update(password.encode('utf-8'))
