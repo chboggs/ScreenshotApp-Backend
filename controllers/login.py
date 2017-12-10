@@ -18,7 +18,6 @@ def login_user():
         options = { "error": False }
         return render_template('login.html', **options)
     else:
-
         username = request.form['username']
         password = request.form['password']
         if username == "":

@@ -44,4 +44,5 @@ def new_user():
             ))
         db.session.commit()
 
-        return redirect(url_for('login_blueprint.login_user'))
+        session['username'] = username
+        return redirect(url_for('overview_blueprint.user_overview'))
