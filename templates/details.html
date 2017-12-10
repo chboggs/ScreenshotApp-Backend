@@ -3,7 +3,7 @@
     <h1>Image {{ image.name }}</h1>
     <p>Uploaded by: {{ image.owner }}</p>
     <p>Uploaded on: {{ image.timestamp }}</p>
-    <img src="{{image_route}}" height=500 width=500>
+    <img src="{{image_route}}">
     <p>Caption: {{ image.caption }}</p>
     <form method="get" action="{{ url_for('overview_blueprint.user_overview') }}">
         <input type="submit" value="Back" />
