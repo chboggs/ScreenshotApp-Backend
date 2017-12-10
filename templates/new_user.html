@@ -53,5 +53,12 @@
           </div>
         </div>
       </form>
+      <form method="get" action="{{ url_for('login_blueprint.login_user') }}">
+          <div class="row">
+              <div class="input-field col s12">
+                  <input class="btn waves-effect waves-light" type="submit" value="Cancel" />
+              </div>
+         </div>
+      </form>
     </div>
 {% endblock %}
