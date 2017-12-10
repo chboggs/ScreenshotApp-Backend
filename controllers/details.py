@@ -22,7 +22,6 @@ def add_viewer(request, user, image):
     comments = Comments.query.filter(Comments.parent_image == image.id).order_by(Comments.timestamp)
     owner = True
 
-    port = str(os.environ.get('$PORT', 8080))
     image_route = "https://screenshot-tool-eecs498.herokuapp.com/api/get-image?id=" + str(image.id)
 
     if new_viewer == image.owner:
@@ -67,8 +66,7 @@ def add_comment(request, user, image):
     if image.owner != user.username:
         owner = False
 
-    port = str(os.environ.get('$PORT', 8080))
-    image_route = "http://0.0.0.0:" + port + "/api/get-image?id=" + str(image.id)
+    image_route = "https://screenshot-tool-eecs498.herokuapp.com/api/get-image?id=" + str(image.id)
 
     new_comment = request.form['comment']
 
@@ -131,8 +129,7 @@ def image_details_get(request, session):
 
     comments = Comments.query.filter(Comments.parent_image == image.id).order_by(Comments.timestamp)
 
-    port = str(os.environ.get('$PORT', 8080))
-    image_route = "http://0.0.0.0:" + port + "/api/get-image?id=" + str(image.id)
+    image_route = "https://screenshot-tool-eecs498.herokuapp.com/api/get-image?id=" + str(image.id)
 
     options = {
         'user': user,
