@@ -38,3 +38,8 @@ h2 {
 
 .btn, .btn-large {
      width: auto; 
+ }
+
+.row {
+	margin-bottom: 0px;
+}

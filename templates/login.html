@@ -1,43 +1,49 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="col s12 z-depth-4 card-panel">
-    <div class="row">
-      <div class="input-field col s12 center">
-        <img src="../static/images/logo.png" alt="" class="circle responsive-img valign profile-image-login">
+<br><br>
+<div class="row">
+  <div class="col s4"></div>
+  <div class="col s4">
+    <div class="col s12 z-depth-4 card-panel">
+      <div class="row">
+        <div class="input-field col s12 center">
+          <img src="../static/images/logo.png" alt="" class="circle responsive-img valign profile-image-login">
+        </div>
       </div>
+      {% if error %}
+        {% for message in problem %}
+          <p class="error">{{message}}</p>
+        {% endfor %}
+      {% endif %}
+      <form method="post" action="{{ url_for('login_blueprint.login_user') }}">
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-social-person-outline prefix"></i>
+            <input id="login_username_input" type="text" name="username">
+            <label for="login_username_input" class="center-align">Username</label>
+          </div>
+        </div>
+        <div class="row margin">
+          <div class="input-field col s12">
+            <i class="mdi-action-lock-outline prefix"></i>
+            <input id="login_password_input" type="password" name="password">
+            <label for="login_password_input">Password</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <button class="btn waves-effect waves-light" id="login_submit" type="submit" name="action">Login</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <a href="{{ url_for('new_user_blueprint.new_user') }}">New User</a>
+          </div>        
+        </div>
+      </form>
     </div>
-    {% if error %}
-      {% for message in problem %}
-        <p class="error">{{message}}</p>
-      {% endfor %}
-    {% endif %}
-    <form method="post" action="{{ url_for('login_blueprint.login_user') }}">
-      <div class="row margin">
-        <div class="input-field col s12">
-          <i class="mdi-social-person-outline prefix"></i>
-          <input id="login_username_input" type="text" name="username">
-          <label for="login_username_input" class="center-align">Username</label>
-        </div>
-      </div>
-      <div class="row margin">
-        <div class="input-field col s12">
-          <i class="mdi-action-lock-outline prefix"></i>
-          <input id="login_password_input" type="password" name="password">
-          <label for="login_password_input">Password</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <button class="btn waves-effect waves-light" id="login_submit" type="submit" name="action">Login</button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <a href="{{ url_for('new_user_blueprint.new_user') }}">New User</a>
-        </div>        
-      </div>
-    </form>
   </div>
-
+  <div class="col s4"></div>
+</div>
 {% endblock %}
 
