@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="row">
+  <div class="row"><br>
     <div class="col s9">
       <img src="{{image_route}}">
       <ul class="collection with-header">
         <li class="collection-header"><h4>Comments</h4></li>
         {% for comment in comments %}
-          <li class="collection-item">{{ comment.comment_string }}<br>By: {{ comment.author }}<br>Posted: {{ comment.timestamp }}</li>
+          <li class="collection-item">{{ comment.comment_string }}<br>By: {{ comment.author }}<br>Posted: {{ comment.timestamp.strftime("%B %d, %Y  %H:%M:%S") }}</li>
         {% endfor %}
       </ul>
       <form method="post" action="{{ url_for('details_blueprint.image_details', image_id=image.id, action=1) }}">
-          <input id="add_comment_input" type="text" name="comment">
+          <input id="add_comment_input" placeholder="New Comment" type="text" name="comment">
           <button class="btn waves-effect waves-light" id="add_comment_submit" type="submit" name="action">Add Comment</button>
       </form>
     </div>
@@ -18,13 +18,13 @@
       <h2>Image {{ image.name }}</h2>
       <p>Caption: {{ image.caption }}</p>
       <p>Uploaded by: {{ image.owner }}</p>
-      <p>Uploaded on: {{ image.timestamp }}</p>
+      <p>Uploaded on: {{ image.timestamp.strftime("%B %d, %Y  %H:%M:%S") }}</p>
       {% if owner %}
         <div id=add_viewer_message>
           <form id="add_viewer_form">
             <b>Grant permission for other user to view this image</b><br>
             Enter username to whom permission will be granted:<br>
-            <input id="add_viewer_input" type="text" name="new_viewer"><br>
+            <input id="add_viewer_input" type="text" placeholder="New Viewer" name="new_viewer"><br>
             <input class="btn waves-effect waves-light" id="add_viewer_submit" type="button" value="Add Viewer" onclick="add_viewer()">
           </form>
         </div>
