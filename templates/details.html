@@ -16,7 +16,7 @@
     </div>
     <div class="col s3">
       <h2 id="image_title">Image: {{ image.name }}</h2>
-      <p>Caption: {{ image.caption }}</p>
+      <p id="image_caption">Caption: {{ image.caption }}</p>
       <p>Uploaded by: {{ image.owner }}</p>
       <p>Uploaded on: {{ image.timestamp.strftime("%B %d, %Y  %H:%M:%S") }}</p>
       {% if owner %}
@@ -33,6 +33,13 @@
             <input id="edit_title_input" type="text" placeholder="New Title" name="new_title"><br>
             <input class="btn waves-effect waves-light" id="edit_title_submit" type="button" value="Change Title" onclick="edit_title()">
           </form>
+        <br>
+        <div id=edit_caption_message></div>
+        <form id="edit_caption_form">
+             <b>Change the caption of this image:</b><br>
+             <input id="edit_caption_input" type="text" placeholder="New Caption" name="new_caption"><br>
+             <input class="btn waves-effect waves-light" id="edit_caption_submit" type="button" value="Change Caption" onclick="edit_caption()">
+        </form>
       {% endif %}
     </div>
 
