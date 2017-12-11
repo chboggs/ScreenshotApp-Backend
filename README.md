@@ -11,6 +11,42 @@ These can be installed by running:
 sudo pip install -r requirements.txt
 ```
 
+## Usage
+
+### Api Usage
+
+Endpoint: '/api/new-image-hololens' POST
+Usage: Used for adding an image to an account from a Microsoft HoloLens
+Format: Form data
+'''
+username: string
+password: string
+caption: string (optional)
+image: file
+'''
+
+Endpoint: '/api/get-image?id=#' GET
+Usage: Used for getting image by # id
+Requirements: Logged in to an account which owns or is able to view image
+
+Endpoint: '/api/add_comment' POST
+Usage: Used for adding a comment to an existing image
+Format: Form data
+Requirements: Logged in to an account which owns or is able to view image
+'''
+image_id: number
+comment: string
+'''
+
+Endpoint: '/api/add_viewer' POST
+Usage: Used for adding a viewer to an existing image
+Format: Form data
+Requirements: Logged in to an account which owns the image
+'''
+image_id: number
+new_viewer: string
+'''
+
 ### Instructions for running locally
 In a terminal window:
 ```
