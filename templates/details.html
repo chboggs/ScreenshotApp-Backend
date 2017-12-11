@@ -20,14 +20,19 @@
       <p>Uploaded by: {{ image.owner }}</p>
       <p>Uploaded on: {{ image.timestamp }}</p>
       {% if owner %}
-        <div id=add_viewer_message>
+        <div id=add_viewer_message></div>
+        <form id="add_viewer_form">
+          <b>Enter username to whom permission to view this image will be granted:</b><br>
+          <input id="add_viewer_input" type="text" name="new_viewer"><br>
+          <input class="btn waves-effect waves-light" id="add_viewer_submit" type="button" value="Add Viewer" onclick="add_viewer()">
+        </form>
+        <!-- <div id=edit_title_message>
           <form id="add_viewer_form">
-            <b>Grant permission for other user to view this image</b><br>
-            Enter username to whom permission will be granted:<br>
+            <b>Enter username to whom permission to view this image will be granted:<b><br>
             <input id="add_viewer_input" type="text" name="new_viewer"><br>
             <input class="btn waves-effect waves-light" id="add_viewer_submit" type="button" value="Add Viewer" onclick="add_viewer()">
           </form>
-        </div>
+        </div> -->
       {% endif %}
     </div>
 

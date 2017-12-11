@@ -72,3 +72,32 @@ def add_comment_api():
     db.session.commit()
 
     return "Successfully added comment", Status.HTTP_OK_BASIC
+
+@api_details_blueprint.route('/api/edit_title', methods=['POST'])
+def edit_title_api():
+    if 'username' not in session:
+        return "Must be authenticated", Status.HTTP_BAD_FORBIDDEN
+
+    current_user = session['username']
+
+    image_id = request.form['image_id']
+    new_title = request.form['new_title']
+
+    if not image_id or not new_title:
+        return "Missing required parameter", Status.HTTP_BAD_REQUEST
+    if not Image.query.filter(Image.id == image_id).first():
+        return "Invalid image id", Status.HTTP_BAD_REQUEST
+
+    if not Image.query.filter(Image.id == image_id).first().owner == session['username']:
+        return "You do not have permissions for this image", Status.HTTP_BAD_UNAUTHORIZED
+
+    image = Image.query.filter(Image.id == image_id).first()
+    image.name = new_title
+    db.session.commit()
+
+    check = Image.query.filter(Image.id == image_id).first()
+
+    if check.name == new_title:
+        return "Successfully changed title to " + new_title, Status.HTTP_OK_BASIC
+    else:
+        return "Unable to change title", 500
