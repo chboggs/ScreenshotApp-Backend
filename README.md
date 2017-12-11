@@ -67,6 +67,24 @@ image_id: number
 new_viewer: string
 ```
 
+Endpoint: '/api/edit_title' POST  
+Usage: Edit the title of an existing image  
+Format: Form data  
+Requirements: Logged in to an account which owns the image  
+```
+image_id: number
+new_title: string
+```
+
+Endpoint: '/api/edit_caption' POST  
+Usage: Edit the caption of an existing image 
+Format: Form data  
+Requirements: Logged in to an account which owns the image  
+```
+image_id: number
+new_caption: string
+```
+
 ### Instructions for running locally
 In a terminal window:
 ```
