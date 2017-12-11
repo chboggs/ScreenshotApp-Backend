@@ -16,7 +16,7 @@
     <h3>Viewable Images</h3>
     {% if viewable %}
       <div class="collection">
-        {% for image in owned_images %}
+        {% for image in viewable_images %}
           <a href="{{url_for('details_blueprint.image_details', image_id=image.id)}}" class="collection-item">{{image.name}} <br> Caption: {{image.caption}}</a>
         {% endfor %}
       </div>
