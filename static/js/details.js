@@ -26,6 +26,24 @@ function add_comment_request(image_id_str, comment_str) {
     req.send(body);
 }
 
+function edit_title_request(image_id_str, new_title_str) {
+    var req = new XMLHttpRequest();
+    var body = "image_id=" + image_id_str + "&new_title=" + new_title_str;
+    var show_suggestions = function() {
+        if(req.readyState == 4 && req.status == 200) {
+            document.getElementById("edit_title_message").innerHTML = req.responseText;
+            document.getElementById("image_title").innerHTML = "Image: " + new_title_str;
+        }
+        else if(req.readyState == 4 && req.status != 200) {
+            document.getElementById("edit_title_message").innerHTML = req.responseText;
+        }
+    }
+    req.onreadystatechange = show_suggestions;
+    req.open("POST", '/api/edit_title', true);
+    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    req.send(body);
+}
+
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
     name = name.replace(/[\[\]]/g, "\\$&");
@@ -48,4 +66,11 @@ function add_comment() {
     var image_id = getParameterByName('image_id');
 
     add_comment_request(image_id, comment);
+}
+
+function edit_title() {
+    var new_title = document.getElementById("edit_title_input").value;
+    var image_id = getParameterByName('image_id');
+
+    edit_title_request(image_id, new_title);
 }

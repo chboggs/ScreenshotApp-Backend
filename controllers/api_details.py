@@ -91,6 +91,9 @@ def edit_title_api():
     if not Image.query.filter(Image.id == image_id).first().owner == session['username']:
         return "You do not have permissions for this image", Status.HTTP_BAD_UNAUTHORIZED
 
+    if Image.query.filter(Image.name == new_title).first():
+        return "Another image already has this title", Status.HTTP_BAD_REQUEST
+
     image = Image.query.filter(Image.id == image_id).first()
     image.name = new_title
     db.session.commit()
