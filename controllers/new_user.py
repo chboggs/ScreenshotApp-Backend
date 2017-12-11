@@ -35,7 +35,7 @@ def new_user():
             }
             return render_template("new_user.html", **options), Status.HTTP_BAD_REQUEST
 
-        if re.match("^(?=.*[A-Z]).{8}$", email) == None:
+        if not any(x.isupper() for x in password) or len(password) < 8 == None:
             options = {
                 "error": True,
                 "problem": { "Password must be eight characters and have an uppercase letter" }
