@@ -43,3 +43,10 @@ h2 {
 .row {
 	margin-bottom: 0px;
 }
+
+img {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+}

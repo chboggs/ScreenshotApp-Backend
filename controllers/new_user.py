@@ -1,4 +1,4 @@
-import os, sys, inspect, hashlib
+import os, sys, inspect, hashlib, re
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
@@ -25,6 +25,20 @@ def new_user():
             options = {
                 "error": True,
                 "problem": { "All fields must be filled out" }
+            }
+            return render_template("new_user.html", **options), Status.HTTP_BAD_REQUEST
+
+        if re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email) == None:
+            options = {
+                "error": True,
+                "problem": { "Must enter a valid email" }
+            }
+            return render_template("new_user.html", **options), Status.HTTP_BAD_REQUEST
+
+        if not any(x.isupper() for x in password) or len(password) < 8 == None:
+            options = {
+                "error": True,
+                "problem": { "Password must be eight characters and have an uppercase letter" }
             }
             return render_template("new_user.html", **options), Status.HTTP_BAD_REQUEST
 
