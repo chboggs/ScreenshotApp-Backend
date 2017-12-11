@@ -28,6 +28,7 @@
            <!--    <button class="btn waves-effect waves-light" type="submit" name="action">Submit
     <i class="material-icons right">send</i>
   </button> -->
+            <li onclick="location.href='{{ url_for('overview_blueprint.user_overview') }}';"><button class="btn waves-effect waves-light">Home</button></li>
             <li><form method="post" action="{{ url_for('logout_blueprint.logout_user') }}"><button class="btn waves-effect waves-light" type="submit" name="action">Logout</button></form></li>
           </ul>
         </div>

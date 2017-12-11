@@ -9,7 +9,7 @@
     {% if owned %}
       <div class="collection">
 		    {% for image in owned_images %}
-          <a href="{{url_for('details_blueprint.image_details', image_id=image.id)}}" class="collection-item">{{image.name}} &emsp;&emsp;caption: {{image.caption}}</a>
+          <a href="{{url_for('details_blueprint.image_details', image_id=image.id)}}" class="collection-item">{{image.name}} <br> Caption: {{image.caption}}</a>
         {% endfor %}
       </div>
     {% else %}
@@ -20,7 +20,7 @@
     {% if viewable %}
       <div class="collection">
         {% for image in owned_images %}
-          <a href="{{url_for('details_blueprint.image_details', image_id=image.id)}}" class="collection-item">{{image.name}} &emsp;&emsp;caption: {{image.caption}}</a>
+          <a href="{{url_for('details_blueprint.image_details', image_id=image.id)}}" class="collection-item">{{image.name}} <br> Caption: {{image.caption}}</a>
         {% endfor %}
       </div>
     {% else %}
