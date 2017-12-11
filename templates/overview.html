@@ -7,28 +7,22 @@
 
     <h3>Owned Images</h3>
     {% if owned %}
-	<table>
-		{% for image in owned_images %}
-			<tr>
-				<td><a href="{{url_for('details_blueprint.image_details', image_id=image.id)}}">{{image.name}}</a>
-                    <br>Caption: {{image.caption}}</td>
-			</tr>
-		{% endfor %}
-	</table>
+      <div class="collection">
+		    {% for image in owned_images %}
+          <a href="{{url_for('details_blueprint.image_details', image_id=image.id)}}" class="collection-item">{{image.name}} &emsp;&emsp;caption: {{image.caption}}</a>
+        {% endfor %}
+      </div>
     {% else %}
-    <p> No owned images </p>
+      <p> No owned images </p>
     {% endif %}
 
     <h3>Viewable Images</h3>
     {% if viewable %}
-    <table>
-		{% for image in viewable_images %}
-			<tr>
-                <td><a href="{{url_for('details_blueprint.image_details', image_id=image.id)}}">{{image.name}}</a>
-                    <br>Caption: {{image.caption}}</td>
-			</tr>
-		{% endfor %}
-	</table>
+      <div class="collection">
+        {% for image in owned_images %}
+          <a href="{{url_for('details_blueprint.image_details', image_id=image.id)}}" class="collection-item">{{image.name}} &emsp;&emsp;caption: {{image.caption}}</a>
+        {% endfor %}
+      </div>
     {% else %}
     <p> No viewable images </p>
     {% endif %}
