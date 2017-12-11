@@ -30,3 +30,11 @@ h1 {
 .collection a.collection-item {
     color: black;
 }
+
+h2 {
+	color: black;
+	font-size: 23px;
+}
+
+.btn, .btn-large {
+     width: auto; 

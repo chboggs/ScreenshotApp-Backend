@@ -1,37 +1,40 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Image {{ image.name }}</h1>
-    <p>Uploaded by: {{ image.owner }}</p>
-    <p>Uploaded on: {{ image.timestamp }}</p>
-    <img src="{{image_route}}">
-    <p>Caption: {{ image.caption }}</p>
-    <form method="get" action="{{ url_for('overview_blueprint.user_overview') }}">
-        <input type="submit" value="Back" />
-    </form>
+  <div class="row">
+    <div class="col s9">
+      <img src="{{image_route}}">
+      <p>Comments:</p>
+      <table>
+        {% for comment in comments %}
+        <tr>
+          <td>{{ comment.comment_string }}<br>
+                      By: {{ comment.author }}<br>
+                      Posted: {{ comment.timestamp }}</td>
+        </tr>
+      {% endfor %}
+      </table>
+      <form method="post" action="{{ url_for('details_blueprint.image_details', image_id=image.id, action=1) }}">
+          <input id="add_comment_input" type="text" name="comment">
+          <button class="btn waves-effect waves-light" id="add_comment_submit" type="submit" name="action">Add Comment</button>
+      </form>
+    </div>
+    <div class="col s3">
+      <h2>Image {{ image.name }}</h2>
+      <p>Caption: {{ image.caption }}</p>
+      <p>Uploaded by: {{ image.owner }}</p>
+      <p>Uploaded on: {{ image.timestamp }}</p>
+      {% if owner %}
+        <div id=add_viewer_message>
+          <form id="add_viewer_form">
+            <b>Grant permission for other user to view this image</b><br>
+            Enter username to whom permission will be granted:<br>
+            <input id="add_viewer_input" type="text" name="new_viewer"><br>
+            <input class="btn waves-effect waves-light" id="add_viewer_submit" type="button" value="Add Viewer" onclick="add_viewer()">
+          </form>
+        </div>
+      {% endif %}
+    </div>
 
-    {% if owner %}
-    <div id=add_viewer_message></div>
-    <form id="add_viewer_form">
-        <b>Grant permission for other user to view this image</b><br>
-        Enter username to whom permission will be granted:<br>
-        <input id="add_viewer_input" type="text" name="new_viewer"><br>
-        <input id="add_viewer_submit" type="button" value="Add Viewer" onclick="add_viewer()">
-    </form>
-    {% endif %}
+  </div>
 
-    <p>Comments:</p>
-    <table>
-		{% for comment in comments %}
-			<tr>
-				<td>{{ comment.comment_string }}<br>
-                    By: {{ comment.author }}<br>
-                    Posted: {{ comment.timestamp }}</td>
-			</tr>
-		{% endfor %}
-	</table>
-    <form method="post" action="{{ url_for('details_blueprint.image_details', image_id=image.id, action=1) }}">
-        Add Comment:<br>
-        <input id="add_comment_input" type="text" name="comment"><br>
-        <input id="add_comment_submit" type="submit" value="Add Comment">
-    </form>
 {% endblock %}
